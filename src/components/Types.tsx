@@ -1,7 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 // Define the structure of parameters for each screen
 export type StackParamList = {
-  TripsList: undefined;  // No params needed for Trips list
+  Trips: undefined;
+  Home: undefined;
+  Form: undefined;  // No params needed for Trips list
   TripDetails: { 
     trip: { 
       id: string;
@@ -19,3 +21,4 @@ export type StackParamList = {
 };
 
 export type TripDetailsScreenProps = NativeStackScreenProps<StackParamList, 'TripDetails'>;
+export type FormScreenProps = NativeStackScreenProps<StackParamList, 'Form'>;

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from '../components/Types';
 
-type TripsScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'TripsList'>;
+type TripsScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'Trips'>;
 
 const Trips: React.FC = () => {
     const navigation = useNavigation<TripsScreenNavigationProp>();
@@ -15,7 +15,7 @@ const Trips: React.FC = () => {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
                 <View style={styles.TripsContainer}>
-                    <Text >{item.name}</Text>
+                    <Text style={styles.title}>{item.name}</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('TripDetails', { trip: item })}>
                         <Image
                             source={item.image} // Ensure image exists
@@ -31,11 +31,19 @@ const Trips: React.FC = () => {
 const styles = StyleSheet.create({
     TripsContainer: {
         marginTop: 10,
+        marginBottom: 20,
+        alignItems: 'center',
     },
     image: {
-        width: '100%',
-        height: 100,
+        width: 350,
+        height: 400,
+        borderRadius: 20,
+
     },
+    title: {
+        fontSize: 22,
+        fontWeight: 'bold',
+    }
 
 });
 

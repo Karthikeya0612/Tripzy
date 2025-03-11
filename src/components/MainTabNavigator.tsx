@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../screens/Home';
 import Trips from '../screens/Trips';
 import Profile from '../screens/Profile';
+import TripForm from '../screens/TripForm';
 import Icon from './Icon';
 import TripDetails from '../screens/TripDetails';
 import { StackParamList } from './Types';
@@ -13,18 +14,27 @@ const Stack = createNativeStackNavigator<StackParamList>();
 
 const TripsStack = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="TripsList" component={Trips} options={{ title: "Trips" }} />
-      <Stack.Screen name="TripDetails" component={TripDetails}  />
+    <Stack.Navigator initialRouteName="Trips">
+      <Stack.Screen name="Trips" component={Trips} options={{ title: "Trips" }} />
+      <Stack.Screen name="TripDetails" component={TripDetails} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
+const HomeStack = () => {
+  return (
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen name="Home" component={Home} options={{ title: "Home", headerShown: false }} />
+      <Stack.Screen name="Form" component={TripForm} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  );
+};
+
 const MainTabNavigator = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen 
-        name="Home" 
-        component={Home} 
+        name="Tripzy" 
+        component={HomeStack} 
         options={{ 
           tabBarIcon: () => (
             <Icon name="home" color="salmon" size={30} />
@@ -33,7 +43,7 @@ const MainTabNavigator = () => {
         }} 
       />
       <Tab.Screen 
-        name="Trips" 
+        name="TripStack" 
         component={TripsStack} 
         options={{ 
           tabBarIcon: () => (
