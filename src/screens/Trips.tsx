@@ -4,46 +4,160 @@ import listOfTrips from '../components/Data';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from '../components/Types';
+import { ScrollView } from 'react-native-gesture-handler';
+import Icon from '../components/Icon';
 
 type TripsScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'Trips'>;
 
 const Trips: React.FC = () => {
     const navigation = useNavigation<TripsScreenNavigationProp>();
+
+    const today = new Date();
+
+    let ongoingTrips = listOfTrips.filter((trip) => {
+        const startDate = new Date(trip.startDate);
+        const endDate = new Date(trip.endDate);
+        return startDate <= today && endDate >= today;
+    });
+
+    let upcomingTrips = listOfTrips.filter((trip) => {
+        const startDate = new Date(trip.startDate);
+        return startDate > today;
+    });
+
+    let pastTrips = listOfTrips.filter((trip) => {
+        const endDate = new Date(trip.endDate);
+        return endDate < today;
+    });
+
+    let formatDate = (date: string) => {
+        const d = new Date(date);   
+        return d.toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+        });     
+    }
+
+    // Function to render trip card
+    const renderTrip = ({ item }: { item: any }) => (
+        <TouchableOpacity
+            onPress={() => navigation.navigate('TripDetails', { trip: item })}
+        >
+            <View style={styles.tripCard}>
+                <Image source={item.image} style={styles.tripImage} />
+                <View style={styles.tripInfo}>
+                    <View style={styles.iconContainer}>
+                        <Icon name="location-on" size={20} color="black" />
+                        <Text style={styles.tripTitle}>{item.name}</Text>
+                    </View>
+                    <View style={styles.iconContainer}>
+                        <Icon name="date-range" size={12} color="gray" />
+                        <Text style={styles.tripDate}>{formatDate(item.startDate)} - {formatDate(item.endDate)}</Text>
+                    </View>
+                    <View style={styles.iconContainer}>
+                        <Icon name="people" size={16} color="gray" />
+                        <Text style={styles.tripPeople}>{item.people} people</Text>
+                    </View>
+                    <View style={styles.iconContainer}>
+                        <Icon name="currency-rupee" size={16} color="black" />
+                        <Text style={styles.tripBudget}>{item.budget}</Text>
+                    </View>
+                </View>
+            </View>
+        </TouchableOpacity>
+    );
+
+
     return (
         <FlatList
-            data={listOfTrips}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-                <View style={styles.TripsContainer}>
-                    <Text style={styles.title}>{item.name}</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('TripDetails', { trip: item })}>
-                        <Image
-                            source={item.image} // Ensure image exists
-                            style={styles.image}
-                        />
-                    </TouchableOpacity>
+            data={[]}
+            renderItem={null}
+            ListHeaderComponent={() => (
+                <View>
+                    {ongoingTrips.length > 0 && <Text style={styles.sectionTitle}>Ongoing Trip</Text>}
+                    <FlatList
+                        data={ongoingTrips}
+                        keyExtractor={(item) => item.id}
+                        renderItem={renderTrip}
+                    />
+
+                    {upcomingTrips.length > 0 && <Text style={styles.sectionTitle}>Upcoming Trip</Text>}
+                    <FlatList
+                        data={upcomingTrips}
+                        keyExtractor={(item) => item.id}
+                        renderItem={renderTrip}
+                    />
+
+                    {pastTrips.length > 0 && <Text style={styles.sectionTitle}>Past Trip</Text>}
+                    <FlatList
+                        data={pastTrips}
+                        keyExtractor={(item) => item.id}
+                        renderItem={renderTrip}
+                    />
                 </View>
             )}
         />
-
     );
+
 };
 const styles = StyleSheet.create({
-    TripsContainer: {
-        marginTop: 10,
-        marginBottom: 20,
-        alignItems: 'center',
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        marginVertical: 10,
+        marginLeft: 10,
     },
-    image: {
-        width: 350,
-        height: 400,
-        borderRadius: 20,
-
+    tripCard: {
+        flexDirection: "row",
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        marginVertical: 8,
+        marginHorizontal: 10,
+        padding: 10,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
-    title: {
-        fontSize: 22,
-        fontWeight: 'bold',
-    }
+    tripImage: {
+        width: 180,
+        height: 100,
+        borderRadius: 10,
+        marginRight: 10,
+    },
+    tripInfo: {
+        flex: 1,
+        justifyContent: "center",
+    },
+    tripTitle: {
+        fontSize: 20,
+        marginLeft: 5,
+    },
+    tripDate: {
+        fontSize: 14,
+        color: "gray",
+        marginLeft: 5,
+    },
+    tripPeople: {
+        fontSize: 14,
+        color: "gray",
+        marginLeft: 5,
+    },
+    tripCost: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#000",
+        textAlign: "right",
+    },
+    iconContainer: {
+        flexDirection: "row",  // Align items in a row
+        alignItems: "center",  // Align to the right if needed
+        marginRight: 5,
+    },
+    tripBudget: {
+        fontSize: 16,
+        fontWeight: "bold",
+    },
 
 });
 

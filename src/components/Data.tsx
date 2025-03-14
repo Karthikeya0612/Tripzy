@@ -1,7 +1,7 @@
 const listOfTrips = [
     {
       id: "1",
-      name: "Mountain Adventure - Manali",
+      name: "Manali",
       image: require("../../assets/one.jpg"),
       startDate: "2025-03-10",
       endDate: "2025-03-15",
@@ -10,10 +10,11 @@ const listOfTrips = [
       transport: "Flight + Cab",
       accommodation: "Hotel Snow Heights",
       notes: "Pack warm clothes, adventure activities included.",
+      people: 2,
     },
     {
       id: "2",
-      name: "Beach Getaway - Goa",
+      name: "Goa",
       image: require("../../assets/two.jpg"),
       startDate: "2025-04-05",
       endDate: "2025-04-10",
@@ -22,10 +23,11 @@ const listOfTrips = [
       transport: "Flight + Bike Rental",
       accommodation: "Beach Resort",
       notes: "Carry sunscreen, beachwear, and light clothing.",
+      people: 4,
     },
     {
       id: "3",
-      name: "Desert Safari - Rajasthan",
+      name: "Rajasthan",
       image: require("../../assets/three.jpg"),
       startDate: "2025-02-20",
       endDate: "2025-02-25",
@@ -34,10 +36,11 @@ const listOfTrips = [
       transport: "Train + Jeep Safari",
       accommodation: "Desert Camp + Hotel",
       notes: "Pack light, carry sunglasses & hats.",
+      people: 3,
     },
     {
       id: "4",
-      name: "Hill Station Retreat - Ooty",
+      name: "Ooty",
       image: require("../../assets/four.jpg"),
       startDate: "2025-06-01",
       endDate: "2025-06-07",
@@ -46,10 +49,11 @@ const listOfTrips = [
       transport: "Bus + Car Rental",
       accommodation: "Cottage Stay",
       notes: "Carry a jacket, enjoy fresh tea & chocolates.",
+      people: 5,
     },
     {
       id: "5",
-      name: "Cultural & Food Tour - Kolkata",
+      name: "Kolkata",
       image: require("../../assets/five.jpg"),
       startDate: "2025-05-15",
       endDate: "2025-05-20",
@@ -58,6 +62,7 @@ const listOfTrips = [
       transport: "Flight + Metro",
       accommodation: "Budget Hotel",
       notes: "Try street food, visit bookstores, and enjoy cultural sites.",
+      people: 3,
     }
   ];
   

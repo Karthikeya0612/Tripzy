@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable, Platform, TouchableOpacity, Image } from 'react-native';
 import { db } from '../../firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 import { StackParamList } from '../components/Types'; // Adjust the import path as necessary
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import * as ImagePicker from "expo-image-picker";
+import { ScrollView } from 'react-native-gesture-handler';
+
 
 type FormScreenProps = NativeStackScreenProps<StackParamList, 'Form'>;
 
@@ -30,7 +33,7 @@ const TripForm = ({ navigation }: FormScreenProps) => {
             year: 'numeric',
             weekday: 'long'
         }).format(date);
-        
+
         setStartDate(formattedDate); // Example: 28 Feb 2025 (Friday)
         hideStartDatePicker();
     };
@@ -42,16 +45,38 @@ const TripForm = ({ navigation }: FormScreenProps) => {
             year: 'numeric',
             weekday: 'long'
         }).format(date);
-        
+
         setEndDate(formattedDate); // Example: 28 Feb 2025 (Friday)
         hideEndDatePicker();
     };
     const [budget, setBudget] = useState('');
     const [transport, setTransport] = useState('');
+    const [accommodation, setAccommodation] = useState('');
+    const [notes, setNotes] = useState('');
     const [itinerary, setItinerary] = useState('');
 
-    const formatDate = (date: Date) => {
-        return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const [image, setImage] = useState<string | null>(null);
+
+    // Function to handle image selection
+    const pickImage = async () => {
+        // Ask for permission
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+            alert("Sorry, we need camera roll permissions to make this work!");
+            return;
+        }
+
+        // Open image picker
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images, // Only allow images
+            allowsEditing: true, // Enable cropping
+            aspect: [4, 3], // Crop aspect ratio (optional)
+            quality: 1, // Image quality (1 = highest)
+        });
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri); // Set selected image URI
+        }
     };
 
     const handleSubmit = async () => {
@@ -61,6 +86,9 @@ const TripForm = ({ navigation }: FormScreenProps) => {
             endDate,
             budget,
             transport,
+            accommodation,
+            notes,
+            image,
             itinerary: itinerary.split(','), // Convert string to array
         };
 
@@ -75,7 +103,7 @@ const TripForm = ({ navigation }: FormScreenProps) => {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <TextInput
                 placeholder="Trip Name"
                 value={tripName}
@@ -121,20 +149,41 @@ const TripForm = ({ navigation }: FormScreenProps) => {
                 style={styles.input}
             />
             <TextInput
+                placeholder="Accomodation"
+                value={accommodation}
+                onChangeText={setAccommodation}
+                style={styles.input}
+            />
+            <TextInput
+                placeholder="Notes"
+                value={notes}
+                onChangeText={setNotes}
+                style={styles.input}
+            />
+            <TextInput
                 placeholder="Itinerary (comma-separated)"
                 value={itinerary}
                 onChangeText={setItinerary}
                 style={styles.input}
             />
-            <Button title="Submit" onPress={handleSubmit} />
-        </View>
+            <View style={{ alignItems: "center", marginTop: 20, marginBottom: 20 }}>
+                <TouchableOpacity onPress={pickImage} style={{ padding: 10, backgroundColor: "#FFA07A", borderRadius: 10 }}>
+                    <Text style={{ color: "white", fontWeight: "bold" }}>Pick an Image</Text>
+                </TouchableOpacity>
+
+                {image && (
+                    <Image source={{ uri: image }} style={{ width: 200, height: 200, marginTop: 20, borderRadius: 10 }} />
+                )}
+            </View>
+            <Button title="Submit" onPress={handleSubmit}  />
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        margin: 20,
     },
     input: {
         borderWidth: 1,
