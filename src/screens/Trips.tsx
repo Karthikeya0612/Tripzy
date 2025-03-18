@@ -1,11 +1,25 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList } from 'react-native';
-import React from 'react';
-import listOfTrips from '../components/Data';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from '../components/Types';
-import { ScrollView } from 'react-native-gesture-handler';
 import Icon from '../components/Icon';
+import { getDocs, collection, onSnapshot } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
+
+interface Trip {
+    id: string;
+    name: string;
+    image: string;
+    startDate: string;
+    endDate: string;
+    itinerary: string[];
+    budget: string;
+    transport: string;
+    accommodation: string;
+    notes: string;
+    people: number;
+}
 
 type TripsScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'Trips'>;
 
@@ -13,6 +27,32 @@ const Trips: React.FC = () => {
     const navigation = useNavigation<TripsScreenNavigationProp>();
 
     const today = new Date();
+
+    const [listOfTrips, setTrips] = useState<Trip[]>([]);
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const tripsRef = collection(db, "trips");
+      
+        // Real-time listener
+        const unsubscribe = onSnapshot(tripsRef, (tripsSnapshot) => {
+          const trips = tripsSnapshot.docs.map((doc) => ({
+            id: doc.id, // Ensure each item has a unique key
+            ...doc.data(),
+          })) as Trip[];
+      
+          setTrips(trips);
+          setLoading(false);
+        });
+      
+        // Cleanup function to avoid memory leaks
+        return () => unsubscribe();
+      }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="blue" />;
+  }
 
     let ongoingTrips = listOfTrips.filter((trip) => {
         const startDate = new Date(trip.startDate);
@@ -44,7 +84,7 @@ const Trips: React.FC = () => {
             onPress={() => navigation.navigate('TripDetails', { trip: item })}
         >
             <View style={styles.tripCard}>
-                <Image source={item.image} style={styles.tripImage} />
+                <Image source={{ uri: item.image }} style={styles.tripImage} />
                 <View style={styles.tripInfo}>
                     <View style={styles.iconContainer}>
                         <Icon name="location-on" size={20} color="black" />

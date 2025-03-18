@@ -17,6 +17,7 @@ const TripForm = ({ navigation }: FormScreenProps) => {
     const [endDate, setEndDate] = useState('');
     const [isStartDatePickerVisible, setStartDatePickerVisibility] = useState(false);
     const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
+    const [people, setPeople] = useState('');
 
     // Show/Hide Pickers
     const showStartDatePicker = () => setStartDatePickerVisibility(true);
@@ -85,6 +86,7 @@ const TripForm = ({ navigation }: FormScreenProps) => {
             startDate,
             endDate,
             budget,
+            people,
             transport,
             accommodation,
             notes,
@@ -139,6 +141,13 @@ const TripForm = ({ navigation }: FormScreenProps) => {
                 placeholder="Budget"
                 value={budget}
                 onChangeText={setBudget}
+                keyboardType="numeric"
+                style={styles.input}
+            />
+            <TextInput
+                placeholder="Number of People"
+                value={people}
+                onChangeText={setPeople}
                 keyboardType="numeric"
                 style={styles.input}
             />

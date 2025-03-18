@@ -16,6 +16,7 @@ export type StackParamList = {
       transport: string;
       accommodation: string;
       notes: string;
+      people: string;
     };
   };
 };

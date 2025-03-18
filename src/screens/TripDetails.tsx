@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import firestore from '@react-native-firebase/firestore';
+import { View, Text, Image, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { TripDetailsScreenProps } from '../components/Types';
 import Icon from '../components/Icon';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -16,12 +17,12 @@ const formatDate = (startDate: string, dayOffset: number) => {
 };
 
 const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
-  const { trip } = route.params;  // Now TypeScript recognizes 'trip' object
-
+  const { trip } = route.params;
+    
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image source={trip.image} style={styles.image} />
+        <Image source={{ uri: trip.image }} style={styles.image} />
         <View style={styles.floatingComponent}>
           <Text style={styles.title}>{trip.name}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
@@ -33,14 +34,18 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
               <Icon name="date-range" size={20} color="red" />
               <Text style={{ fontSize: 16, marginLeft: 5 }}>{`${trip.itinerary.length} days`}</Text>
             </View>
+            <View style={{ flexDirection: 'row' }}>
+              <Icon name="people" size={20} color="red" />
+              <Text style={{ fontSize: 16, marginLeft: 5 }}>{trip.people}</Text>
+            </View>
           </View>
         </View>
       </View>
       <ScrollView>
         <View style={styles.detailsContainer}>
-          <Text style={styles.text}>Transport: {trip.transport}</Text>
-          <Text style={styles.text}>Accommodation: {trip.accommodation}</Text>
-          <Text style={styles.text}>Notes: {trip.notes}</Text>
+          <Text style={styles.text}><Text style={styles.textHeading}>Transport: </Text> {trip.transport}</Text>
+          <Text style={styles.text}><Text style={styles.textHeading}>Accommodation: </Text>{trip.accommodation}</Text>
+          <Text style={styles.text}><Text style={styles.textHeading}>Notes: </Text>{trip.notes}</Text>
         </View>
           <Text style={styles.title}>Itinerary:</Text>
         <FlatList
@@ -76,6 +81,9 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
     borderBottomLeftRadius: 25,
   },
+  textHeading: {  
+    fontWeight: 'bold',
+  },
   text: {
     fontSize: 16,
   },
@@ -86,8 +94,8 @@ const styles = StyleSheet.create({
   floatingComponent: {
     position: 'absolute',
     bottom: -20,
-    left: '10%',
-    right: '10%',
+    left: '20%',
+    right: '20%',
     backgroundColor: 'white',
     borderRadius: 15,
     padding: 10,
@@ -104,9 +112,20 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     padding: 10,
-    marginVertical: 10,
+    marginTop: 30,
+    marginBottom: 10,
+    borderRadius: 15,
+    backgroundColor: 'white',
+    marginHorizontal: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    zIndex: 1, 
   },
 
 });
 
 export default TripDetails;
+

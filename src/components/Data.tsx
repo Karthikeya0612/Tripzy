@@ -1,3 +1,4 @@
+/*
 const listOfTrips = [
     {
       id: "1",
@@ -6,7 +7,7 @@ const listOfTrips = [
       startDate: "2025-03-10",
       endDate: "2025-03-15",
       itinerary: ["Day 1: Arrive & Explore Mall Road", "Day 2: Solang Valley", "Day 3: Rohtang Pass", "Day 4: Manikaran", "Day 5: Departure"],
-      budget: "800",
+      budget: "11,000",
       transport: "Flight + Cab",
       accommodation: "Hotel Snow Heights",
       notes: "Pack warm clothes, adventure activities included.",
@@ -45,7 +46,7 @@ const listOfTrips = [
       startDate: "2025-06-01",
       endDate: "2025-06-07",
       itinerary: ["Board train at Hyderabad", "Reach Mysore and start to Ooty Via Bandipur Forest Reach Mysore and start to Ooty Via Bandipur Forest Reach Mysore and start to Ooty Via Bandipur Forest Reach Mysore and start to Ooty Via Bandipur Forest", "Explore Doddabetta Peak and Lamb's Rock at Coonoor", "Back to Mysore and Board train to Hyd", "Reach Hyderabad"],
-      budget: "750",
+      budget: "11,750",
       transport: "Bus + Car Rental",
       accommodation: "Cottage Stay",
       notes: "Carry a jacket, enjoy fresh tea & chocolates.",
@@ -67,4 +68,64 @@ const listOfTrips = [
   ];
   
   export default listOfTrips;
-  
+import firestore from '@react-native-firebase/firestore';
+import { useState, useEffect } from 'react';
+import { ActivityIndicator } from 'react-native';
+
+
+const TripsList = () => {
+  interface Trip {
+    id: string;
+    name: string;
+    image: any;
+    startDate: string;
+    endDate: string;
+    itinerary: string[];
+    budget: string;
+    transport: string;
+    accommodation: string;
+    notes: string;
+    people: number;
+  }
+
+  const [listOfTrips, setTrips] = useState<Trip[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTrips = async () => {
+      try {
+        const tripCollection = await firestore().collection("trips").get();
+        const tripData = tripCollection.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            name: data.name,
+            image: data.image,
+            startDate: data.startDate,
+            endDate: data.endDate,
+            itinerary: data.itinerary,
+            budget: data.budget,
+            transport: data.transport,
+            accommodation: data.accommodation,
+            notes: data.notes,
+            people: data.people,
+          };
+        });
+        setTrips(tripData);
+      } catch (error) {
+        console.error("Error fetching trips:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrips();
+  }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+};
+
+export default listOfTrips;
+*/
