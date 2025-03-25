@@ -31,23 +31,34 @@ const HomeStack = () => {
 
 const MainTabNavigator = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator 
+    screenOptions={{ headerShown:false, tabBarStyle: 
+    { position: "absolute", // Ensures the tab bar stays fixed at the bottom
+      bottom: 0, // Aligns tab bar at the very bottom
+      left: 0,
+      right: 0,
+      height: 45, // Adjust height as needed
+      borderTopEndRadius: 25,
+      borderTopStartRadius: 25,
+
+    } }} >
       <Tab.Screen 
         name="Tripzy" 
         component={HomeStack} 
         options={{ 
-          tabBarIcon: () => (
-            <Icon name="home" color="salmon" size={30} />
+          tabBarIcon: ({ focused }) => (
+            <Icon name="home" color={focused ? "#FE724C" : "gray"} size={30} />
           ),
           tabBarLabel: () => null,
-        }} 
+        }}  
+        
       />
       <Tab.Screen 
         name="TripStack" 
         component={TripsStack} 
         options={{ 
-          tabBarIcon: () => (
-            <Icon name="flight" color="salmon" size={30} />
+          tabBarIcon: ({ focused }) => (
+            <Icon name="flight" color={focused ? "#FE724C" : "gray"} size={30} />
           ),
           tabBarLabel: () => null,
           headerShown: false,
@@ -57,8 +68,8 @@ const MainTabNavigator = () => {
         name="Profile" 
         component={Profile} 
         options={{ 
-          tabBarIcon: () => (
-            <Icon name="person" color="salmon" size={30} />
+          tabBarIcon: ({ focused }) => (
+            <Icon name="person" color={focused ? "#FE724C" : "gray"} size={30} />
           ),
           tabBarLabel: () => null,
         }} 

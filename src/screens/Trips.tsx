@@ -6,6 +6,7 @@ import { StackParamList } from '../components/Types';
 import Icon from '../components/Icon';
 import { getDocs, collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
+import { ScrollView } from 'react-native-gesture-handler';
 
 interface Trip {
     id: string;
@@ -87,19 +88,19 @@ const Trips: React.FC = () => {
                 <Image source={{ uri: item.image }} style={styles.tripImage} />
                 <View style={styles.tripInfo}>
                     <View style={styles.iconContainer}>
-                        <Icon name="location-on" size={20} color="black" />
+                        <Icon name="location-on" size={20} color="red" />
                         <Text style={styles.tripTitle}>{item.name}</Text>
                     </View>
                     <View style={styles.iconContainer}>
-                        <Icon name="date-range" size={12} color="gray" />
+                        <Icon name="date-range" size={12} color="red" />
                         <Text style={styles.tripDate}>{formatDate(item.startDate)} - {formatDate(item.endDate)}</Text>
                     </View>
                     <View style={styles.iconContainer}>
-                        <Icon name="people" size={16} color="gray" />
+                        <Icon name="people" size={16} color="red" />
                         <Text style={styles.tripPeople}>{item.people} people</Text>
                     </View>
                     <View style={styles.iconContainer}>
-                        <Icon name="currency-rupee" size={16} color="black" />
+                        <Icon name="currency-rupee" size={16} color="red" />
                         <Text style={styles.tripBudget}>{item.budget}</Text>
                     </View>
                 </View>
@@ -113,7 +114,7 @@ const Trips: React.FC = () => {
             data={[]}
             renderItem={null}
             ListHeaderComponent={() => (
-                <View>
+                <View style={{ flex: 1, marginBottom: 45 }}>
                     {ongoingTrips.length > 0 && <Text style={styles.sectionTitle}>Ongoing Trip</Text>}
                     <FlatList
                         data={ongoingTrips}
@@ -172,6 +173,7 @@ const styles = StyleSheet.create({
     tripTitle: {
         fontSize: 20,
         marginLeft: 5,
+        fontWeight: "bold",
     },
     tripDate: {
         fontSize: 14,

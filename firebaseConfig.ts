@@ -3,14 +3,24 @@ import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from "firebase/firestore";
 
+import{
+  API_KEY,
+  AUTH_DOMAIN,
+  PROJECT_ID,
+  STORAGE_BUCKET,
+  MESSAGING_SENDER_ID,
+  APP_ID,
+  MEASUREMENT_ID
+} from '@env';
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCwSkJaSf8zG3tJKIY9iNDURmZPbVPydP4",
-  authDomain: "tripzy-7573b.firebaseapp.com",
-  projectId: "tripzy-7573b",
-  storageBucket: "tripzy-7573b.firebasestorage.app",
-  messagingSenderId: "380335008782",
-  appId: "1:380335008782:web:3030052c2eaa257d33a05f",
-  measurementId: "G-E1D5XFMCK8"
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  projectId: PROJECT_ID,
+  storageBucket: STORAGE_BUCKET,
+  messagingSenderId: MESSAGING_SENDER_ID,
+  appId: APP_ID,
+  measurementId: MEASUREMENT_ID,
 };
 const app = initializeApp(firebaseConfig);
 export const auth = initializeAuth(app, {

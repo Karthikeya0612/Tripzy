@@ -10,12 +10,12 @@ const Home: React.FC = () => {
     const navigation = useNavigation<FormScreenNavigationProp>();
     return (
         <View style={styles.container}>
-            <ImageBackground source={require('../../assets/tripzy.jpg')}  style={{width: '100%', height: '100%'}}>
+            <ImageBackground source={require('../../assets/tripzy.jpg')}  style={{width: '100%', height: '100%', flex: 1}}>
             <Text style={styles.title}>Welcome to Tripzy!</Text>
             <Text style={styles.text}>Plan your next trip here!</Text>
             <View style={styles.container}>
                 <TouchableOpacity onPress={() => navigation.navigate('Form')} style={styles.button}>
-                    <Text style={styles.buttonText}>Add Your New Trip</Text>
+                    <Text style={styles.buttonText}>Add a New Trip</Text>
                 </TouchableOpacity>
                         
                         
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     button: {
         marginTop: '20%',
         padding: 10,
-        backgroundColor: '#FFA07A',
+        backgroundColor: '#FE724C',
         alignItems: 'center',
         borderRadius: 10,
     },

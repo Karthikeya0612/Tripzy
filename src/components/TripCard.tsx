@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     dayNumber: {
         fontSize: 18,
         fontWeight: 'bold',
-        backgroundColor: '#FFA500',
+        backgroundColor: '#FE724C',
         color: 'white',
         width: "100%",
         height: 50,
