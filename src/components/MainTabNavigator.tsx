@@ -8,6 +8,7 @@ import TripForm from '../screens/TripForm';
 import Icon from './Icon';
 import TripDetails from '../screens/TripDetails';
 import { StackParamList } from './Types';
+import EditTrip from '../screens/EditTrip';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<StackParamList>();
@@ -17,6 +18,7 @@ const TripsStack = () => {
     <Stack.Navigator initialRouteName="Trips">
       <Stack.Screen name="Trips" component={Trips} options={{ title: "Trips" }} />
       <Stack.Screen name="TripDetails" component={TripDetails} options={{ headerShown: false }} />
+      <Stack.Screen name="EditTrip" component={EditTrip} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };

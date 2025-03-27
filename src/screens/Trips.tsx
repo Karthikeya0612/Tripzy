@@ -1,12 +1,11 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, ActivityIndicator } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { act, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from '../components/Types';
 import Icon from '../components/Icon';
-import { getDocs, collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
-import { ScrollView } from 'react-native-gesture-handler';
 
 interface Trip {
     id: string;
@@ -35,25 +34,25 @@ const Trips: React.FC = () => {
 
     useEffect(() => {
         const tripsRef = collection(db, "trips");
-      
+
         // Real-time listener
         const unsubscribe = onSnapshot(tripsRef, (tripsSnapshot) => {
-          const trips = tripsSnapshot.docs.map((doc) => ({
-            id: doc.id, // Ensure each item has a unique key
-            ...doc.data(),
-          })) as Trip[];
-      
-          setTrips(trips);
-          setLoading(false);
+            const trips = tripsSnapshot.docs.map((doc) => ({
+                id: doc.id, //Each item has a unique key
+                ...doc.data(),
+            })) as Trip[];
+
+            setTrips(trips);
+            setLoading(false);
         });
-      
+
         // Cleanup function to avoid memory leaks
         return () => unsubscribe();
-      }, []);
+    }, []);
 
-  if (loading) {
-    return <ActivityIndicator size="large" color="blue" />;
-  }
+    if (loading) {
+        return <ActivityIndicator size="large" color="blue" />;
+    }
 
     let ongoingTrips = listOfTrips.filter((trip) => {
         const startDate = new Date(trip.startDate);
@@ -72,40 +71,46 @@ const Trips: React.FC = () => {
     });
 
     let formatDate = (date: string) => {
-        const d = new Date(date);   
+        const d = new Date(date);
         return d.toLocaleDateString('en-GB', {
             day: 'numeric',
             month: 'short',
-        });     
+        });
     }
+
+    
+
 
     // Function to render trip card
     const renderTrip = ({ item }: { item: any }) => (
-        <TouchableOpacity
-            onPress={() => navigation.navigate('TripDetails', { trip: item })}
-        >
-            <View style={styles.tripCard}>
-                <Image source={{ uri: item.image }} style={styles.tripImage} />
-                <View style={styles.tripInfo}>
-                    <View style={styles.iconContainer}>
-                        <Icon name="location-on" size={20} color="red" />
-                        <Text style={styles.tripTitle}>{item.name}</Text>
-                    </View>
-                    <View style={styles.iconContainer}>
-                        <Icon name="date-range" size={12} color="red" />
-                        <Text style={styles.tripDate}>{formatDate(item.startDate)} - {formatDate(item.endDate)}</Text>
-                    </View>
-                    <View style={styles.iconContainer}>
-                        <Icon name="people" size={16} color="red" />
-                        <Text style={styles.tripPeople}>{item.people} people</Text>
-                    </View>
-                    <View style={styles.iconContainer}>
-                        <Icon name="currency-rupee" size={16} color="red" />
-                        <Text style={styles.tripBudget}>{item.budget}</Text>
+        <View style={{ flex: 1 }}>
+            <TouchableOpacity
+                onPress={() => navigation.navigate('TripDetails', { trip: item })}
+            >
+                <View style={styles.tripCard}>
+                    <Image source={{ uri: item.image }} style={styles.tripImage} />
+                    <View style={styles.tripInfo}>
+                        <View style={styles.iconContainer}>
+                            <Icon name="location-on" size={20} color="red" />
+                            <Text style={styles.tripTitle}>{item.name}</Text>
+                        </View>
+                        <View style={styles.iconContainer}>
+                            <Icon name="date-range" size={12} color="red" />
+                            <Text style={styles.tripDate}>{formatDate(item.startDate)} - {formatDate(item.endDate)}</Text>
+                        </View>
+                        <View style={styles.iconContainer}>
+                            <Icon name="people" size={16} color="red" />
+                            <Text style={styles.tripPeople}>{item.people} people</Text>
+                        </View>
+                        <View style={styles.iconContainer}>
+                            <Icon name="currency-rupee" size={16} color="red" />
+                            <Text style={styles.tripBudget}>{item.budget}</Text>
+                        </View>
                     </View>
                 </View>
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+            
+        </View>
     );
 
 
@@ -171,7 +176,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     tripTitle: {
-        fontSize: 20,
+        fontSize: 18,
         marginLeft: 5,
         fontWeight: "bold",
     },
@@ -199,7 +204,8 @@ const styles = StyleSheet.create({
     tripBudget: {
         fontSize: 16,
         fontWeight: "bold",
-    },
+    }
+
 
 });
 

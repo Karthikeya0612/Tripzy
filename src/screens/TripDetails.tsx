@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
-import { View, Text, Image, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { TripDetailsScreenProps } from '../components/Types';
+import { View, Text, Image, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { StackParamList } from '../components/Types';
 import Icon from '../components/Icon';
 import { ScrollView } from 'react-native-gesture-handler';
 import TripCard from '../components/TripCard';
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { deleteObject, getStorage, ref } from 'firebase/storage';
 
 const formatDate = (startDate: string, dayOffset: number) => {
   const date = new Date(startDate);
@@ -16,13 +21,42 @@ const formatDate = (startDate: string, dayOffset: number) => {
   });
 };
 
+type TripDetailsScreenProps = NativeStackScreenProps<StackParamList, 'TripDetails'>;
+
+
+
 const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
   const { trip } = route.params;
-    
+  const navigation = useNavigation<NavigationProp<StackParamList>>();
+
+  const handleDeleteTrip = async (trip: { id: string, image: any }) => {
+    try {
+      const storage = getStorage();
+      const imageRef = ref(storage, trip.image); // Reference to the image in storage
+
+      await deleteObject(imageRef)
+        .then(() => console.log("Image deleted successfully"))
+        .catch((error) => console.error("Error deleting image:", error));
+      await deleteDoc(doc(db, "trips", trip.id));
+      navigation.goBack(); // Navigate back after deletion
+    } catch (error) {
+      console.error("Error deleting trip:", error);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: trip.image }} style={styles.image} />
+        <View style={[styles.actionButtons , { top: "15%" }]}>
+          <TouchableOpacity onPress={() => navigation.navigate('EditTrip', { trip })}>
+            <Icon name="edit" size={24} color="red" />
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.actionButtons, { top: "30%" }]}>
+          <TouchableOpacity onPress={() => handleDeleteTrip(trip)}>
+            <Icon name="delete" size={24} color="red" />
+          </TouchableOpacity>
+        </View>
         <View style={styles.floatingComponent}>
           <Text style={styles.title}>{trip.name}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
@@ -47,7 +81,7 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
           <Text style={styles.text}><Text style={styles.textHeading}>Accommodation: </Text>{trip.accommodation}</Text>
           <Text style={styles.text}><Text style={styles.textHeading}>Notes: </Text>{trip.notes}</Text>
         </View>
-          <Text style={styles.title}>Itinerary:</Text>
+        <Text style={styles.title}>Itinerary:</Text>
         <FlatList
           data={trip.itinerary}
           keyExtractor={(item, index) => index.toString()}
@@ -81,7 +115,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
     borderBottomLeftRadius: 25,
   },
-  textHeading: {  
+  textHeading: {
     fontWeight: 'bold',
   },
   text: {
@@ -122,7 +156,18 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
-    zIndex: 1, 
+    zIndex: 1,
+  },
+  actionButtons: {
+    position: 'absolute',
+    left: '85%',
+    right: '2%',
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 8,
+    alignItems: 'center',
+    elevation: 5, // For Android shadow
+    shadowColor: '#000',
   },
 
 });

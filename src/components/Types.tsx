@@ -19,6 +19,21 @@ export type StackParamList = {
       people: string;
     };
   };
+  EditTrip: { 
+    trip: { 
+      id: string;
+      name: string;
+      image: any;
+      startDate: string;
+      endDate: string;
+      itinerary: string[];
+      budget: string;
+      transport: string;
+      accommodation: string;
+      notes: string;
+      people: string;
+    };
+  };
 };
 
 export type TripDetailsScreenProps = NativeStackScreenProps<StackParamList, 'TripDetails'>;
