@@ -93,6 +93,14 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
           )}
         />
       </ScrollView>
+      <View style={styles.expenseButton}>
+          <TouchableOpacity onPress={() => navigation.navigate('ManageExpenses')}>
+            <View style={{flexDirection: 'row'}}>
+            <Icon name="sticky-note-2" size={24} color="white" />
+            <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 5, color: "white" }}>Manage Expenses</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
     </View>
   );
 };
@@ -169,6 +177,18 @@ const styles = StyleSheet.create({
     elevation: 5, // For Android shadow
     shadowColor: '#000',
   },
+  expenseButton:{
+    position: 'absolute',
+    left: '50%',
+    right: '2%',
+    backgroundColor: '#FE724C',
+    borderRadius: 15,
+    padding: 10,
+    alignItems: 'center',
+    elevation: 5, // For Android shadow
+    shadowColor: '#000',
+    bottom: '8%',
+  }
 
 });
 

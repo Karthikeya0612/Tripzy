@@ -3,7 +3,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 export type StackParamList = {
   Trips: undefined;
   Home: undefined;
-  Form: undefined;  // No params needed for Trips list
+  Form: undefined;   // No params needed for Trips list
+  ManageExpenses: undefined;
   TripDetails: { 
     trip: { 
       id: string;

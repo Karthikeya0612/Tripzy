@@ -53,13 +53,6 @@ const EditTrip: React.FC = () => {
                 onChangeText={(text) => handleChange("name", text)}
             />
 
-            <Text style={styles.label}>Image URL</Text>
-            <TextInput
-                style={styles.input}
-                value={tripDetails.image}
-                onChangeText={(text) => handleChange("image", text)}
-            />
-
             <Text style={styles.label}>Start Date</Text>
             <TextInput
                 style={styles.input}
