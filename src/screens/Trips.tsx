@@ -115,7 +115,8 @@ const Trips: React.FC = () => {
 
 
     return (
-        <FlatList
+        <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
+            <FlatList
             data={[]}
             renderItem={null}
             ListHeaderComponent={() => (
@@ -143,6 +144,7 @@ const Trips: React.FC = () => {
                 </View>
             )}
         />
+        </View>
     );
 
 };

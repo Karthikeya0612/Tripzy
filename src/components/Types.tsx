@@ -4,7 +4,10 @@ export type StackParamList = {
   Trips: undefined;
   Home: undefined;
   Form: undefined;   // No params needed for Trips list
-  ManageExpenses: undefined;
+  ManageExpenses: {
+    tripId: string; // Pass the trip ID to manage expenses
+    
+  };
   TripDetails: { 
     trip: { 
       id: string;

@@ -52,11 +52,19 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
             <Icon name="edit" size={24} color="red" />
           </TouchableOpacity>
         </View>
+        
         <View style={[styles.actionButtons, { top: "30%" }]}>
           <TouchableOpacity onPress={() => handleDeleteTrip(trip)}>
             <Icon name="delete" size={24} color="red" />
           </TouchableOpacity>
         </View>
+
+        <View style={[styles.actionButtons , { top: "15%", left: "2%", right: "85%" }]}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={24} color="red" />
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.floatingComponent}>
           <Text style={styles.title}>{trip.name}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
@@ -94,7 +102,7 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
         />
       </ScrollView>
       <View style={styles.expenseButton}>
-          <TouchableOpacity onPress={() => navigation.navigate('ManageExpenses')}>
+          <TouchableOpacity onPress={() => navigation.navigate('ManageExpenses', { tripId: trip.id })}>
             <View style={{flexDirection: 'row'}}>
             <Icon name="sticky-note-2" size={24} color="white" />
             <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 5, color: "white" }}>Manage Expenses</Text>
@@ -187,7 +195,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 5, // For Android shadow
     shadowColor: '#000',
-    bottom: '8%',
+    bottom: '5%',
   }
 
 });
