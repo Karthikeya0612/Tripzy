@@ -9,6 +9,10 @@ import {
     getExpenses,
 } from '../components/ExpenseService';
 import { useEffect, useState } from "react";
+import ExpenseItem from "../components/ExpenseItem";
+import CategoryPicker from "../components/CategoryPicker";
+import currencies from "../components/Currencies";
+import categories from "../components/Categories";
 const ManageExpenses = ({ route }: any) => {
 
     const navigation = useNavigation<NavigationProp<StackParamList>>();
@@ -19,6 +23,9 @@ const ManageExpenses = ({ route }: any) => {
     const [updateId, setUpdateId] = useState('');
     const [showForm, setShowForm] = useState(false);
     const [showUpdate, setShowUpdate] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
+    const [category, setCategory] = useState<string | null>(null);
+    const [currency, setCurreny] = useState<string | null>(null);
 
     useEffect(() => {
         fetchExpenses();
@@ -30,10 +37,11 @@ const ManageExpenses = ({ route }: any) => {
     };
 
     const handleAdd = async () => {
-        await addExpense(tripId, { description, amount });
+        await addExpense(tripId, { description, amount, category });
         fetchExpenses();
         setDescription('');
         setAmount('');
+        setCategory(null);
         setShowForm(!showForm);
     };
     const handleView = () => {
@@ -55,7 +63,7 @@ const ManageExpenses = ({ route }: any) => {
         setAmount('');
         setUpdateId('');
         setShowUpdate(!showUpdate);
-        
+
     };
 
     const handleDelete = async (id: string) => {
@@ -74,58 +82,47 @@ const ManageExpenses = ({ route }: any) => {
                     <Icon name="wallet-travel" color="white" size={50} />
                 </View>
             </View>
-            {!showForm && !showUpdate ? (
-                <View style={{ padding: 20 }}>
+            {!showForm ? (
+                <View style={{ marginTop: 30, flex: 1 }}>
                     <FlatList
                         data={expenses}
                         keyExtractor={item => item.id}
                         renderItem={({ item }) => (
-                            <View style={{ marginTop: 10 }}>
-                                <Text>{item.description}: ₹{item.amount}</Text>
-                                <Button title="Update" onPress={() => handleUpdateView(item.id)} />
-                                <Button title="Delete" onPress={() => handleDelete(item.id)} />
-                            </View>
+                            <ExpenseItem
+                                description={item.description}
+                                amount={item.amount}
+                                category={item.category}
+                                onPressMenu={() => console.log('Show menu for', item.id)}
+                            />
                         )}
                     />
                 </View>
-            ) : showForm ? (
-                <View style={{ padding: 20 }}>
-                    <TextInput
-                        placeholder="Description"
-                        value={description}
-                        onChangeText={setDescription}
-                        style={{ borderWidth: 1, borderColor: 'gray', marginBottom: 10, padding: 10 }}
-                    />
-                    <TextInput
-                        placeholder="Amount"
-                        value={amount}
-                        onChangeText={setAmount}
-                        keyboardType="numeric"
-                        style={{ borderWidth: 1, borderColor: 'gray', marginBottom: 10, padding: 10 }}
-                    />
+            ) : (
+                <View style={{ padding: 20, flex: 1, marginTop: '10%' }}>
+                    <View style={styles.formContainer}>
+                        <CategoryPicker categories={categories} selectedCategory={category} onSelect={setCategory} />
+                        <TextInput
+                            placeholder="Description"
+                            value={description}
+                            onChangeText={setDescription}
+                            style={{ borderWidth: 1, borderColor: 'gray', marginBottom: 10, padding: 10, flex: 0.8 }}
+                        />
+                    </View>
+                    <View style={styles.formContainer}>
+                        <CategoryPicker categories={currencies} selectedCategory={currency} onSelect={setCurreny} />
+                        <TextInput
+                            placeholder="Amount"
+                            value={amount}
+                            onChangeText={setAmount}
+                            keyboardType="numeric"
+                            style={{ borderWidth: 1, borderColor: 'gray', marginBottom: 10, padding: 10, flex: 0.8 }}
+                        />
+                    </View>
+
                     <Button title="Add Expense" onPress={() => handleAdd()} />
                     <Button title="Cancel" onPress={() => setShowForm(!showForm)} />
                 </View>
-            ) : (
-                <View style={{ padding: 20 }}>
-                    <TextInput
-                        placeholder="Description"
-                        value={description}
-                        onChangeText={setDescription}
-                        style={{ borderWidth: 1, borderColor: 'gray', marginBottom: 10, padding: 10 }}
-                    />
-                    <TextInput
-                        placeholder="Amount"
-                        value={amount}
-                        onChangeText={setAmount}
-                        keyboardType="numeric"
-                        style={{ borderWidth: 1, borderColor: 'gray', marginBottom: 10, padding: 10 }}
-                    />
-                    <Button title="Update" onPress={() => handleUpdate()} />
-                    <Button title="Cancel" onPress={() => setShowUpdate(!showUpdate)} />
-                </View>
             )}
-
 
             <View style={styles.addButton}>
                 <TouchableOpacity onPress={() => handleView()}>
@@ -188,5 +185,30 @@ const styles = StyleSheet.create({
         elevation: 5, // For Android shadow
         shadowColor: '#000',
         bottom: '5%',
+    },
+    editButtons: {
+        backgroundColor: '#FE724C',
+        borderRadius: 25,
+        padding: 5,
+        marginLeft: 10
+    },
+    expenses: {
+        flexDirection: "row",
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        marginVertical: 8,
+        marginHorizontal: 10,
+        padding: 10,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+        marginTop: 10,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    formContainer: {
+        justifyContent: 'space-between',
+        flexDirection: 'row',
     },
 });
