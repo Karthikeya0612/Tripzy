@@ -55,7 +55,7 @@ const MainTabNavigator = () => {
         component={HomeStack}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name="home" color={focused ? "#FE724C" : "gray"} size={30} />
+            <Icon name="home" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
           ),
           tabBarLabel: () => null,
         }}
@@ -81,7 +81,7 @@ const MainTabNavigator = () => {
               display: shouldHideTabBar ? 'none' : 'flex',
             },
             tabBarIcon: ({ focused }) => (
-              <Icon name="flight" color={focused ? "#FE724C" : "gray"} size={30} />
+              <Icon name="flight" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
             ),
             tabBarLabel: () => null,
             headerShown: false,
@@ -93,7 +93,7 @@ const MainTabNavigator = () => {
           component = { Profile }
           options = {{
             tabBarIcon: ({ focused }) => (
-              <Icon name="person" color={focused ? "#FE724C" : "gray"} size={30} />
+              <Icon name="person" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
             ),
               tabBarLabel: () => null,
         }} 

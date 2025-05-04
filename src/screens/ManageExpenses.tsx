@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
-        backgroundColor: '#FE724C',
+        backgroundColor: '#1c6888',
         width: '100%',
         height: '20%',
         borderBottomLeftRadius: 25,
@@ -149,11 +149,11 @@ const styles = StyleSheet.create({
     },
 
     iconContanier: {
-        backgroundColor: '#FE724C',
+        backgroundColor: '#1c6888',
         position: 'absolute',
         bottom: '-15%',
         left: '10%',
-        borderColor: '#696969',
+        borderColor: '#fff5e9',
         borderWidth: 3,
         borderRadius: 10,
         padding: "3%",
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: '60%',
         right: '2%',
-        backgroundColor: '#FE724C',
+        backgroundColor: '#1c6888',
         borderRadius: 15,
         padding: 10,
         alignItems: 'center',

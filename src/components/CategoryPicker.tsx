@@ -42,7 +42,7 @@ const CategoryPicker: React.FC<Props> = ({ categories, selectedCategory, onSelec
                     setModalVisible(false);
                   }}
                 >
-                  <Icon name={item.value} size={24} color="#FE724C" />
+                  <Icon name={item.value} size={24} color="#1c6888" />
                   <Text style={styles.label}>{item.label}</Text>
                 </TouchableOpacity>
               )}
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   cancelBtn: {
     marginTop: 20,
-    backgroundColor: '#FE724C',
+    backgroundColor: '#1c6888',
     padding: 12,
     alignItems: 'center',
     borderRadius: 8,

@@ -49,19 +49,19 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
         <Image source={{ uri: trip.image }} style={styles.image} />
         <View style={[styles.actionButtons , { top: "15%" }]}>
           <TouchableOpacity onPress={() => navigation.navigate('EditTrip', { trip })}>
-            <Icon name="edit" size={24} color="red" />
+            <Icon name="edit" size={24} color="#1c6888" />
           </TouchableOpacity>
         </View>
         
         <View style={[styles.actionButtons, { top: "30%" }]}>
           <TouchableOpacity onPress={() => handleDeleteTrip(trip)}>
-            <Icon name="delete" size={24} color="red" />
+            <Icon name="delete" size={24} color="#1c6888" />
           </TouchableOpacity>
         </View>
 
         <View style={[styles.actionButtons , { top: "15%", left: "2%", right: "85%" }]}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back" size={24} color="red" />
+            <Icon name="arrow-back" size={24} color="#1c6888" />
           </TouchableOpacity>
         </View>
 
@@ -69,15 +69,15 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
           <Text style={styles.title}>{trip.name}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
             <View style={{ flexDirection: 'row' }}>
-              <Icon name="currency-rupee" size={20} color="red" />
+              <Icon name="currency-rupee" size={20} color="#1c6888" />
               <Text style={{ fontSize: 16, marginLeft: 5 }}>{trip.budget}</Text>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              <Icon name="date-range" size={20} color="red" />
+              <Icon name="date-range" size={20} color="#1c6888" />
               <Text style={{ fontSize: 16, marginLeft: 5 }}>{`${trip.itinerary.length} days`}</Text>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              <Icon name="people" size={20} color="red" />
+              <Icon name="people" size={20} color="#1c6888" />
               <Text style={{ fontSize: 16, marginLeft: 5 }}>{trip.people}</Text>
             </View>
           </View>
@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#E0E0E0",
   },
   title: {
     fontSize: 22,
@@ -189,7 +188,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: '50%',
     right: '2%',
-    backgroundColor: '#FE724C',
+    backgroundColor: '#1c6888',
     borderRadius: 15,
     padding: 10,
     alignItems: 'center',

@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     iconCircle: {
-        backgroundColor: '#1CB376',
+        backgroundColor: '#1c6888',
         width: 40,
         height: 40,
         borderRadius: 20,
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     amount: {
-        color: '#1CB376',
+        color: '#1c6888',
         fontWeight: '500',
         marginTop: 4,
     },
