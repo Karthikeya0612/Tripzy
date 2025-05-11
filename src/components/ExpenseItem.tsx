@@ -1,24 +1,32 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from './Icon';
-
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { StackParamList } from './Types';
 type ExpenseItemProps = {
+    tripId: string;
+    id: string;
     description: string;
     amount: string | number;
-    category: string;
-    onPressMenu: () => void;
+    icon: string;
+    currency: string;
+    onPress?: () => void;
 };
 
-const ExpenseItem: React.FC<ExpenseItemProps> = ({ description, amount, category, onPressMenu }) => {
+const ExpenseItem: React.FC<ExpenseItemProps> = ({ tripId, id, description, amount, icon, currency, onPress  }) => {
+    const navigation = useNavigation<NavigationProp<StackParamList>>();
     return (
-        <TouchableOpacity onPress={onPressMenu}>
+        <TouchableOpacity onPress={onPress}>
             <View style={styles.card}>
                 <View style={styles.iconCircle}>
-                    <Icon name={category} size={20} color="white" />
+                    <Icon name={icon} size={20} color="white" />
                 </View>
                 <View style={styles.textContainer}>
                     <Text style={styles.title}>{description}</Text>
-                    <Text style={styles.amount}>₹ {amount}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Icon name={currency} size={16} color="#1c6888" />
+                        <Text style={styles.amount}> {amount}</Text>
+                    </View>
                 </View>
 
             </View>

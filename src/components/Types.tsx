@@ -6,8 +6,17 @@ export type StackParamList = {
   Form: undefined;   // No params needed for Trips list
   ManageExpenses: {
     tripId: string; // Pass the trip ID to manage expenses
-    
   };
+  ExpenseDetails: {
+    expense: { 
+      tripId: string;
+      id: string;
+      description: string;
+      amount: string;
+      icon: string;
+      currency: string;
+    };
+  }; // No params needed for Expense details
   TripDetails: { 
     trip: { 
       id: string;

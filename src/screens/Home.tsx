@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Button, Image, ImageBackground, TouchableOpacit
 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { StackParamList } from "../components/Types";
+import { StackParamList } from "../components/Types.js";
 import React from "react";
 
 type FormScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'Form'>;
@@ -57,3 +57,4 @@ const styles = StyleSheet.create({
     }
 
 });
+

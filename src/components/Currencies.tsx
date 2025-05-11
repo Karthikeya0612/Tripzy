@@ -1,12 +1,11 @@
-
 const currencies = [
-    { label: 'Dollar', value: 'attach-money', icon: 'local-dining' },
-    { label: 'Rupee', value: 'currency-rupee', icon: 'hotel' },
-    { label: 'Yen', value: 'currency-yen', icon: 'directions-car' },
-    { label: 'Yuan', value: 'currency-yuan', icon: 'local-gas-station' },
-    { label: 'Pound', value: 'currency-pound', icon: 'local-gas-station' },
-    { label: 'Euro', value: 'euro', icon: 'local-gas-station' },
-    { label: 'Franc', value: 'currency-franc', icon: 'local-gas-station' },
+    { label: 'Rupee', value: 'currency-rupee'},
+    { label: 'Dollar', value: 'attach-money'},
+    { label: 'Yen', value: 'currency-yen'},
+    { label: 'Yuan', value: 'currency-yuan' },
+    { label: 'Pound', value: 'currency-pound' },
+    { label: 'Euro', value: 'euro' },
+    { label: 'Franc', value: 'currency-franc' },
 ];
 
 export default currencies;

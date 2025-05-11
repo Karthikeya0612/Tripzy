@@ -21,7 +21,7 @@ const TripsStack = () => {
       <Stack.Screen name="Trips" component={Trips} options={{ title: "Trips" }} />
       <Stack.Screen name="TripDetails" component={TripDetails} options={{ headerShown: false }} />
       <Stack.Screen name="EditTrip" component={EditTrip} options={{ headerShown: false }} />
-      <Stack.Screen name="ManageExpenses" component={ManageExpenses} options={{ headerShown: false }}/>
+      <Stack.Screen name="ManageExpenses" component={ManageExpenses} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
@@ -66,7 +66,7 @@ const MainTabNavigator = () => {
         component={TripsStack}
         options={({ route }) => {
           const routeName = getFocusedRouteNameFromRoute(route) ?? 'Trips';
-          const hideOnScreens = ['TripDetails', 'EditTrip', 'ManageExpenses'];
+          const hideOnScreens = ['TripDetails', 'EditTrip', 'ManageExpenses', 'ExpenseDetails'];
           const shouldHideTabBar = hideOnScreens.includes(routeName);
 
           return {
@@ -88,15 +88,15 @@ const MainTabNavigator = () => {
           };
         }}
       />
-            < Tab.Screen
-          name = "Profile"
-          component = { Profile }
-          options = {{
-            tabBarIcon: ({ focused }) => (
-              <Icon name="person" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
-            ),
-              tabBarLabel: () => null,
-        }} 
+      < Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon name="person" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
+          ),
+          tabBarLabel: () => null,
+        }}
       />
     </Tab.Navigator>
   );

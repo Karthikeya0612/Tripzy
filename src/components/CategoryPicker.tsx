@@ -5,7 +5,7 @@ import Icon from './Icon';
 
 
 interface Props {
-  categories: { label: string; value: string; icon: string }[];
+  categories: { label: string; value: string }[];
   selectedCategory: string | null;
   onSelect: (value: string) => void;
 }
@@ -13,7 +13,7 @@ interface Props {
 const CategoryPicker: React.FC<Props> = ({ categories, selectedCategory, onSelect }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const selected = categories.find((cat) => cat.value === selectedCategory);
+  const selected = categories.find((cat) => cat.value === selectedCategory) || categories[0];
 
   return (
     <View style={{ flex: 0.2 }}>
@@ -22,7 +22,7 @@ const CategoryPicker: React.FC<Props> = ({ categories, selectedCategory, onSelec
         onPress={() => setModalVisible(true)}
       >
         {selected ? (
-            <Icon name={selected.value} size={24} color="#FE724C" />
+          <Icon name={selected.value} size={24} color="#1c6888" />
         ) : (
           <Text style={{ color: '#aaa' }}>Select</Text>
         )}

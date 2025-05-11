@@ -1,35 +1,43 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, FlatList } from "react-native";
+import { Modal, View, Text, StyleSheet, TouchableOpacity, TextInput, Button, FlatList, Alert } from "react-native";
 import Icon from "../components/Icon";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { StackParamList } from "../components/Types";
-import {
-    addExpense,
-    updateExpense,
-    deleteExpense,
-    getExpenses,
-} from '../components/ExpenseService';
-import { useEffect, useState } from "react";
+import { addExpense, updateExpense, getExpenses, deleteExpense } from '../components/ExpenseService';
+import { useCallback, useEffect, useState } from "react";
 import ExpenseItem from "../components/ExpenseItem";
 import CategoryPicker from "../components/CategoryPicker";
 import currencies from "../components/Currencies";
-import categories from "../components/Categories";
+import icons from "../components/Icons";
+import Header from "../components/Header";
+import { useFocusEffect } from "@react-navigation/native";
+
 const ManageExpenses = ({ route }: any) => {
 
-    const navigation = useNavigation<NavigationProp<StackParamList>>();
     const { tripId } = route.params;
     const [expenses, setExpenses] = useState<any[]>([]);
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
     const [updateId, setUpdateId] = useState('');
-    const [showForm, setShowForm] = useState(false);
     const [showUpdate, setShowUpdate] = useState(false);
-    const [showDetails, setShowDetails] = useState(false);
-    const [category, setCategory] = useState<string | null>(null);
-    const [currency, setCurreny] = useState<string | null>(null);
+    const [icon, setIcon] = useState<string | null>(icons.length > 0 ? icons[0].value : null);
+    const [currency, setCurreny] = useState<string | null>(currencies.length > 0 ? currencies[0].value : null);
+    const [mode, setMode] = useState<'list' | 'add' | 'update' | 'view' | 'delete'>('list');
+    const [selectedExpenseId, setSelectedExpenseId] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         fetchExpenses();
     }, []);
+
+    useEffect(() => {
+        if (!icon && icons.length > 0) {
+            setIcon(icons[0].value);
+        }
+    }, [icons]);
+
+    useEffect(() => {
+        if (!currency && currencies.length > 0) {
+            setCurreny(currencies[0].value);
+        }
+    }, [currencies]);
 
     const fetchExpenses = async () => {
         const data = await getExpenses(tripId);
@@ -37,16 +45,33 @@ const ManageExpenses = ({ route }: any) => {
     };
 
     const handleAdd = async () => {
-        await addExpense(tripId, { description, amount, category });
+        await addExpense(tripId, { description, amount, icon, currency });
         fetchExpenses();
         setDescription('');
         setAmount('');
-        setCategory(null);
-        setShowForm(!showForm);
+        setIcon(icons[0].value);
+        setCurreny(currencies[0].value);
+        setSelectedExpenseId('');
+        setMode('list');
     };
-    const handleView = () => {
-        setShowForm(!showForm);
+
+    const handleDelete = async () => {
+        Alert.alert('Confirm Delete', 'Are you sure you want to delete this expense?', [
+            { text: 'Cancel', style: 'cancel' },
+            {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: async () => {
+                    await deleteExpense(tripId, selectedExpenseId);
+                    fetchExpenses();
+                    setMode('list');
+                }
+            }
+        ]);
+
     };
+
+
     const handleUpdateView = (id: string) => {
         setUpdateId(id);
         setShowUpdate(!showUpdate);
@@ -65,110 +90,155 @@ const ManageExpenses = ({ route }: any) => {
         setShowUpdate(!showUpdate);
 
     };
-
-    const handleDelete = async (id: string) => {
-        await deleteExpense(tripId, id);
-        fetchExpenses();
-    };
-    return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.actionButtons}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Icon name="arrow-back" size={24} color="red" />
-                    </TouchableOpacity>
+    switch (mode) {
+        case 'list':
+            return (
+                <View style={styles.container}>
+                    <Header />
+                    <View style={{ marginTop: 30, flex: 1 }}>
+                        <FlatList
+                            data={expenses}
+                            keyExtractor={item => item.id}
+                            extraData={expenses}
+                            renderItem={({ item }) => (
+                                <ExpenseItem
+                                    tripId={tripId}
+                                    id={item.id}
+                                    description={item.description}
+                                    amount={item.amount}
+                                    icon={item.icon}
+                                    currency={item.currency}
+                                    onPress={() => {
+                                        setSelectedExpenseId(item.id);
+                                        setDescription(item.description);
+                                        setAmount(item.amount.toString());
+                                        setIcon(item.icon);
+                                        setCurreny(item.currency);
+                                        setMode('view');
+                                    }}
+                                />
+                            )}
+                        />
+                    </View>
+                    <View style={styles.addButton}>
+                        <TouchableOpacity onPress={() => setMode('add')}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Icon name="sticky-note-2" size={24} color="white" />
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 5, color: "white" }}>Add Expenses</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <View style={styles.iconContanier}>
-                    <Icon name="wallet-travel" color="white" size={50} />
-                </View>
-            </View>
-            {!showForm ? (
-                <View style={{ marginTop: 30, flex: 1 }}>
-                    <FlatList
-                        data={expenses}
-                        keyExtractor={item => item.id}
-                        renderItem={({ item }) => (
-                            <ExpenseItem
-                                description={item.description}
-                                amount={item.amount}
-                                category={item.category}
-                                onPressMenu={() => console.log('Show menu for', item.id)}
+            )
+        case 'add':
+            return (
+                <View style={styles.container}>
+                    <Header />
+                    <View style={{ padding: 20, flex: 1, marginTop: '10%' }}>
+                        <View style={styles.formContainer}>
+                            <CategoryPicker categories={icons} selectedCategory={icon} onSelect={setIcon} />
+                            <TextInput
+                                placeholder="Description"
+                                value={description}
+                                onChangeText={setDescription}
+                                style={styles.formInput}
                             />
-                        )}
-                    />
-                </View>
-            ) : (
-                <View style={{ padding: 20, flex: 1, marginTop: '10%' }}>
-                    <View style={styles.formContainer}>
-                        <CategoryPicker categories={categories} selectedCategory={category} onSelect={setCategory} />
-                        <TextInput
-                            placeholder="Description"
-                            value={description}
-                            onChangeText={setDescription}
-                            style={{ borderWidth: 1, borderColor: 'gray', marginBottom: 10, padding: 10, flex: 0.8 }}
-                        />
+                        </View>
+                        <View style={styles.formContainer}>
+                            <CategoryPicker categories={currencies} selectedCategory={currency} onSelect={setCurreny} />
+                            <TextInput
+                                placeholder="Amount"
+                                value={amount}
+                                onChangeText={setAmount}
+                                keyboardType="numeric"
+                                style={styles.formInput}
+                            />
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
+                            <TouchableOpacity onPress={() => handleAdd()} style={styles.editButtons}>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Submit</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setMode('list')} style={styles.editButtons}>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <View style={styles.formContainer}>
-                        <CategoryPicker categories={currencies} selectedCategory={currency} onSelect={setCurreny} />
-                        <TextInput
-                            placeholder="Amount"
-                            value={amount}
-                            onChangeText={setAmount}
-                            keyboardType="numeric"
-                            style={{ borderWidth: 1, borderColor: 'gray', marginBottom: 10, padding: 10, flex: 0.8 }}
-                        />
+                </View>
+            )
+        case 'view':
+            return (
+                <View style={styles.container}>
+                    <Header />
+                    <View style={styles.iconContainer}>
+                        <Icon name={icon} size={40} color="white" />
                     </View>
 
-                    <Button title="Add Expense" onPress={() => handleAdd()} />
-                    <Button title="Cancel" onPress={() => setShowForm(!showForm)} />
-                </View>
-            )}
+                    <Text style={styles.label}>Description:</Text>
+                    <Text style={styles.value}>{description}</Text>
 
-            <View style={styles.addButton}>
-                <TouchableOpacity onPress={() => handleView()}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Icon name="sticky-note-2" size={24} color="white" />
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 5, color: "white" }}>Add Expenses</Text>
+                    <Text style={styles.label}>Amount:</Text>
+                    <Text style={styles.value}>
+                        <Icon name={currency} size={16} color="#1c6888" /> {amount}
+                    </Text>
+
+                    <Text style={styles.label}>Added by:</Text>
+                    <Text style={styles.value}>karthik</Text>
+
+                    <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
+                        <TouchableOpacity onPress={() => setMode('update')} style={styles.editButtons}>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Update</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleDelete()} style={styles.editButtons}>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Delete</Text>
+                        </TouchableOpacity>
+
                     </View>
-                </TouchableOpacity>
-            </View>
-        </View>
-    );
+                </View>
+            )
+        case 'update':
+            return (
+                <View style={styles.container}>
+                    <Header />
+                    <View style={{ padding: 20, flex: 1, marginTop: '10%' }}>
+                        <View style={styles.formContainer}>
+                            <CategoryPicker categories={icons} selectedCategory={icon} onSelect={setIcon} />
+                            <TextInput
+                                placeholder="Description"
+                                value={description}
+                                onChangeText={setDescription}
+                                style={styles.formInput}
+                            />
+                        </View>
+                        <View style={styles.formContainer}>
+                            <CategoryPicker categories={currencies} selectedCategory={currency} onSelect={setCurreny} />
+                            <TextInput
+                                placeholder="Amount"
+                                value={amount}
+                                onChangeText={setAmount}
+                                keyboardType="numeric"
+                                style={styles.formInput}
+                            />
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
+                            <TouchableOpacity onPress={() => handleAdd()} style={styles.editButtons}>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Update</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.editButtons}>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            )
+        case 'delete':
+            break;
+    }
+
 }
 export default ManageExpenses;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    },
-    header: {
-        backgroundColor: '#1c6888',
-        width: '100%',
-        height: '20%',
-        borderBottomLeftRadius: 25,
-        borderBottomRightRadius: 25,
-    },
-
-    iconContanier: {
-        backgroundColor: '#1c6888',
-        position: 'absolute',
-        bottom: '-15%',
-        left: '10%',
-        borderColor: '#fff5e9',
-        borderWidth: 3,
-        borderRadius: 10,
-        padding: "3%",
-    },
-    actionButtons: {
-        position: 'absolute',
-        top: "20%",
-        left: "4%",
-        right: "85%",
-        backgroundColor: 'white',
-        borderRadius: 15,
-        padding: "2%",
-        alignItems: 'center',
-        elevation: 5, // For Android shadow
-        shadowColor: '#000',
     },
     title: {
         fontSize: 20,
@@ -182,15 +252,18 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         padding: 10,
         alignItems: 'center',
-        elevation: 5, // For Android shadow
+        elevation: 5,
         shadowColor: '#000',
         bottom: '5%',
     },
     editButtons: {
-        backgroundColor: '#FE724C',
-        borderRadius: 25,
-        padding: 5,
-        marginLeft: 10
+        backgroundColor: '#1c6888',
+        borderRadius: 15,
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        alignItems: 'center',
+        elevation: 5,
+        shadowColor: '#000',
     },
     expenses: {
         flexDirection: "row",
@@ -210,5 +283,37 @@ const styles = StyleSheet.create({
     formContainer: {
         justifyContent: 'space-between',
         flexDirection: 'row',
+        paddingHorizontal: 10,
+    },
+    formInput: {
+        flex: 0.85,
+        borderBottomWidth: 1,
+        borderColor: '#1c6888',
+        borderRadius: 8,
+        padding: 10,
+        width: '45%',
+        marginHorizontal: 5,
+    },
+    label: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#444',
+        marginTop: 10,
+    },
+    value: {
+        fontSize: 16,
+        color: '#222',
+        marginBottom: 10,
+    },
+    iconContainer: {
+        backgroundColor: '#1c6888',
+        padding: 20,
+        borderRadius: 50,
+        alignSelf: 'center',
+        marginBottom: 20,
+    },
+    buttonContainer: {
+        marginTop: 30,
+        gap: 12,
     },
 });

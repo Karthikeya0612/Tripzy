@@ -102,7 +102,7 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
         />
       </ScrollView>
       <View style={styles.expenseButton}>
-          <TouchableOpacity onPress={() => navigation.navigate('ManageExpenses', { tripId: trip.id })}>
+          <TouchableOpacity onPress={() => navigation.navigate('ManageExpenses', { tripId: trip.id})}>
             <View style={{flexDirection: 'row'}}>
             <Icon name="sticky-note-2" size={24} color="white" />
             <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 5, color: "white" }}>Manage Expenses</Text>
