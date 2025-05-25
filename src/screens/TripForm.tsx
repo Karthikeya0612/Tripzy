@@ -60,7 +60,15 @@ const TripForm = ({ navigation }: FormScreenProps) => {
     const [itinerary, setItinerary] = useState<string[]>([]);
 
     const [image, setImage] = useState<string | null>(null);
-
+    const [errors, setErrors] = useState({
+        tripName: '',
+        date: '',
+        budget: '',
+        people: '',
+        transport: '',
+        accommodation: '',
+        image: '',
+    });
     const generateItineraryInputs = (end: Date) => {
         if (!startDate || !end) return;
 
@@ -107,10 +115,57 @@ const TripForm = ({ navigation }: FormScreenProps) => {
 
 
     const handleSubmit = async () => {
-        if (!startDate || !endDate) {
-            Alert.alert('Error', 'Please select both start and end dates.');
-            return;
+        const newErrors = {
+            tripName: '',
+            date: '',
+            budget: '',
+            people: '',
+            transport: '',
+            accommodation: '',
+            image: '',
+        };
+
+        let isValid = true;
+
+        if (!tripName.trim()) {
+            newErrors.tripName = "Destination is required.";
+            isValid = false;
         }
+
+        if (!startDate || !endDate) {
+            newErrors.date = "Both start and end dates are required.";
+            isValid = false;
+        } else if (startDate > endDate) {
+            newErrors.date = "Start date cannot be after end date.";
+            isValid = false;
+        }
+
+        if (!budget.trim() || isNaN(Number(budget)) || Number(budget) <= 0) {
+            newErrors.budget = "Enter a valid budget.";
+            isValid = false;
+        }
+
+        if (!people.trim() || isNaN(Number(people)) || Number(people) <= 0) {
+            newErrors.people = "Enter a valid number of people.";
+            isValid = false;
+        }
+
+        if (!transport.trim()) {
+            newErrors.transport = "Transport method is required.";
+            isValid = false;
+        }
+
+        if (!accommodation.trim()) {
+            newErrors.accommodation = "Accommodation is required.";
+            isValid = false;
+        }
+        if (!image) {
+            newErrors.image = "Trip image is required.";
+            isValid = false;
+        }
+        setErrors(newErrors);
+
+        if (!isValid) return;
 
         let imageUrl = null;
 
@@ -133,8 +188,8 @@ const TripForm = ({ navigation }: FormScreenProps) => {
 
         const tripData = {
             name: tripName,
-            startDate: startDate.toISOString(), // Convert Date to string
-            endDate: endDate.toISOString(),
+            startDate: startDate!.toISOString(), // Convert Date to string
+            endDate: endDate!.toISOString(),
             budget,
             people,
             transport,
@@ -156,8 +211,8 @@ const TripForm = ({ navigation }: FormScreenProps) => {
 
     return (
         <View style={styles.container}>
-            <Header name="flight"/>
-            <ScrollView style={{flex: 1, margin: 40}} showsVerticalScrollIndicator={false}>
+            <Header name="flight" />
+            <ScrollView style={{ flex: 1, margin: 40 }} showsVerticalScrollIndicator={false}>
                 <SafeAreaView>
                     <TextInput
                         placeholder="Enter your Destination"
@@ -165,6 +220,8 @@ const TripForm = ({ navigation }: FormScreenProps) => {
                         onChangeText={setTripName}
                         style={styles.input}
                     />
+                    {errors.tripName ? <Text style={styles.errorText}>{errors.tripName}</Text> : null}
+
                     <View style={styles.dateContainer}>
                         <TouchableOpacity onPress={showStartDatePicker} style={styles.dateButton}>
                             <Text style={styles.dateText}>{startDate ? startDate.toDateString() : 'Select Start Date'}</Text>
@@ -190,6 +247,8 @@ const TripForm = ({ navigation }: FormScreenProps) => {
                         onConfirm={handleEndDateConfirm}
                         onCancel={hideEndDatePicker}
                     />
+                    {errors.date ? <Text style={styles.errorText}>{errors.date}</Text> : null}
+
                     {/* Dynamic Itinerary Inputs */}
                     {itinerary.length > 0 && <Text style={{ marginBottom: 15, textAlign: "center", fontSize: 20 }}>Itinerary:</Text>}
                     {itinerary.map((day, index) => (
@@ -208,6 +267,8 @@ const TripForm = ({ navigation }: FormScreenProps) => {
                         keyboardType="numeric"
                         style={styles.input}
                     />
+                    {errors.budget ? <Text style={styles.errorText}>{errors.budget}</Text> : null}
+
                     <TextInput
                         placeholder="Number of People"
                         value={people}
@@ -215,30 +276,39 @@ const TripForm = ({ navigation }: FormScreenProps) => {
                         keyboardType="numeric"
                         style={styles.input}
                     />
+                    {errors.people ? <Text style={styles.errorText}>{errors.people}</Text> : null}
+
                     <TextInput
                         placeholder="Mode of Transport"
                         value={transport}
                         onChangeText={setTransport}
                         style={styles.input}
                     />
+                    {errors.transport ? <Text style={styles.errorText}>{errors.transport}</Text> : null}
+
                     <TextInput
                         placeholder="Accomodation"
                         value={accommodation}
                         onChangeText={setAccommodation}
                         style={styles.input}
                     />
+                    {errors.accommodation ? <Text style={styles.errorText}>{errors.accommodation}</Text> : null}
+
                     <TextInput
                         placeholder="Notes"
                         value={notes}
                         onChangeText={setNotes}
                         style={styles.input}
-                        
+
                     />
 
                     <View style={{ alignItems: "center", marginTop: 20, marginBottom: 20 }}>
                         <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
                             <Text style={{ color: "gray", fontWeight: "bold" }}>Pick an Image</Text>
                         </TouchableOpacity>
+                        {errors.image ? (
+                            <Text style={styles.errorText}>{errors.image}</Text>
+                        ) : null}
 
                         {image && (
                             <Image source={{ uri: image }} style={{ width: 200, height: 200, marginTop: 20, borderRadius: 10 }} />
@@ -305,6 +375,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 20,
     },
+    errorText: {
+        color: 'red',
+        marginBottom: 10,
+        marginLeft: 5,
+        fontSize: 13,
+    }
 
 });
 
