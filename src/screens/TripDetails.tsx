@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
-import { View, Text, Image, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Modal } from 'react-native';
 import { StackParamList } from '../components/Types';
 import Icon from '../components/Icon';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -28,7 +28,8 @@ type TripDetailsScreenProps = NativeStackScreenProps<StackParamList, 'TripDetail
 const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
   const { trip } = route.params;
   const navigation = useNavigation<NavigationProp<StackParamList>>();
-
+  const [modalVisible, setModalVisible] = useState(false);
+  
   const handleDeleteTrip = async (trip: { id: string, image: any }) => {
     try {
       const storage = getStorage();
@@ -47,24 +48,43 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: trip.image }} style={styles.image} />
-        <View style={[styles.actionButtons , { top: "15%" }]}>
+        <View style={[styles.actionButtons, { top: "15%" }]}>
           <TouchableOpacity onPress={() => navigation.navigate('EditTrip', { trip })}>
             <Icon name="edit" size={24} color="#1c6888" />
           </TouchableOpacity>
         </View>
-        
+
         <View style={[styles.actionButtons, { top: "30%" }]}>
-          <TouchableOpacity onPress={() => handleDeleteTrip(trip)}>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Icon name="delete" size={24} color="#1c6888" />
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.actionButtons , { top: "15%", left: "2%", right: "85%" }]}>
+        <View style={[styles.actionButtons, { top: "15%", left: "2%", right: "85%" }]}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="arrow-back" size={24} color="#1c6888" />
           </TouchableOpacity>
         </View>
-
+        <Modal
+          visible={modalVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#00000099' }}>
+            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+              <Text>Are you sure you want to delete this?</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
+                <TouchableOpacity onPress={() => handleDeleteTrip(trip)} style={styles.editButtons}>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Yes</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.editButtons}>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>No</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.floatingComponent}>
           <Text style={styles.title}>{trip.name}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
@@ -102,13 +122,13 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
         />
       </ScrollView>
       <View style={styles.expenseButton}>
-          <TouchableOpacity onPress={() => navigation.navigate('ManageExpenses', { tripId: trip.id})}>
-            <View style={{flexDirection: 'row'}}>
+        <TouchableOpacity onPress={() => navigation.navigate('ManageExpenses', { tripId: trip.id })}>
+          <View style={{ flexDirection: 'row' }}>
             <Icon name="sticky-note-2" size={24} color="white" />
             <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 5, color: "white" }}>Manage Expenses</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -184,7 +204,7 @@ const styles = StyleSheet.create({
     elevation: 5, // For Android shadow
     shadowColor: '#000',
   },
-  expenseButton:{
+  expenseButton: {
     position: 'absolute',
     left: '50%',
     right: '2%',
@@ -195,7 +215,16 @@ const styles = StyleSheet.create({
     elevation: 5, // For Android shadow
     shadowColor: '#000',
     bottom: '5%',
-  }
+  },
+  editButtons: {
+    backgroundColor: '#1c6888',
+    borderRadius: 15,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+  },
 
 });
 

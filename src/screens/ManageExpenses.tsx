@@ -7,7 +7,6 @@ import CategoryPicker from "../components/CategoryPicker";
 import currencies from "../components/Currencies";
 import icons from "../components/Icons";
 import Header from "../components/Header";
-import { useFocusEffect } from "@react-navigation/native";
 
 const ManageExpenses = ({ route }: any) => {
 
@@ -56,21 +55,22 @@ const ManageExpenses = ({ route }: any) => {
     };
 
     const handleDelete = async () => {
-        Alert.alert('Confirm Delete', 'Are you sure you want to delete this expense?', [
-            { text: 'Cancel', style: 'cancel' },
-            {
-                text: 'Delete',
-                style: 'destructive',
-                onPress: async () => {
-                    await deleteExpense(tripId, selectedExpenseId);
-                    fetchExpenses();
-                    setMode('list');
-                }
-            }
-        ]);
+
+        await deleteExpense(tripId, selectedExpenseId);
+        fetchExpenses();
+        setMode('list');
+        setModalVisible(false);
 
     };
 
+    const handleCancel = () => {
+        setMode('list');
+        setDescription('');
+        setAmount('');
+        setIcon(icons[0].value);
+        setCurreny(currencies[0].value);
+        setSelectedExpenseId('');
+    };
 
     const handleUpdateView = (id: string) => {
         setUpdateId(id);
@@ -82,20 +82,27 @@ const ManageExpenses = ({ route }: any) => {
         }
     };
     const handleUpdate = async () => {
-        await updateExpense(tripId, updateId, { description, amount });
+        await updateExpense(tripId, selectedExpenseId, { description, amount, icon, currency });
         fetchExpenses();
         setDescription('');
         setAmount('');
-        setUpdateId('');
-        setShowUpdate(!showUpdate);
+        setIcon(icons[0].value);
+        setCurreny(currencies[0].value);
+        setSelectedExpenseId('');
+        setMode('list');
 
     };
     switch (mode) {
         case 'list':
             return (
                 <View style={styles.container}>
-                    <Header />
+                    <Header name="wallet-travel" />
                     <View style={{ marginTop: 30, flex: 1 }}>
+                        {expenses.length === 0 && (
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{ fontSize: 18, color: '#888' }}>No expenses added yet.</Text>
+                            </View>
+                        )}
                         <FlatList
                             data={expenses}
                             keyExtractor={item => item.id}
@@ -133,7 +140,7 @@ const ManageExpenses = ({ route }: any) => {
         case 'add':
             return (
                 <View style={styles.container}>
-                    <Header />
+                    <Header name="wallet-travel" />
                     <View style={{ padding: 20, flex: 1, marginTop: '10%' }}>
                         <View style={styles.formContainer}>
                             <CategoryPicker categories={icons} selectedCategory={icon} onSelect={setIcon} />
@@ -156,10 +163,10 @@ const ManageExpenses = ({ route }: any) => {
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
                             <TouchableOpacity onPress={() => handleAdd()} style={styles.editButtons}>
-                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Submit</Text>
+                                <Icon name="check" size={20} color="white" />
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setMode('list')} style={styles.editButtons}>
-                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Cancel</Text>
+                                <Icon name="clear" size={20} color="white" />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -168,37 +175,65 @@ const ManageExpenses = ({ route }: any) => {
         case 'view':
             return (
                 <View style={styles.container}>
-                    <Header />
-                    <View style={styles.iconContainer}>
-                        <Icon name={icon} size={40} color="white" />
-                    </View>
+                    <Header name="wallet-travel" />
 
-                    <Text style={styles.label}>Description:</Text>
-                    <Text style={styles.value}>{description}</Text>
-
-                    <Text style={styles.label}>Amount:</Text>
-                    <Text style={styles.value}>
-                        <Icon name={currency} size={16} color="#1c6888" /> {amount}
-                    </Text>
-
-                    <Text style={styles.label}>Added by:</Text>
-                    <Text style={styles.value}>karthik</Text>
-
-                    <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: "flex-end", alignItems: 'center', marginTop: 30, marginRight: 5 }}>
                         <TouchableOpacity onPress={() => setMode('update')} style={styles.editButtons}>
-                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Update</Text>
+                            <Icon name="edit" size={16} color="white" />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleDelete()} style={styles.editButtons}>
-                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Delete</Text>
+                        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.editButtons}>
+                            <Icon name="delete" size={16} color="white" />
                         </TouchableOpacity>
-
+                        <TouchableOpacity onPress={() => handleCancel()} style={styles.editButtons}>
+                            <Icon name="clear" size={16} color="white" />
+                        </TouchableOpacity>
                     </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 20, marginLeft: 20, alignItems: 'center' }}>
+                        <View style={styles.iconContainer}>
+                            <Icon name={icon} size={20} color="white" />
+                        </View>
+                        <Text style={styles.value}>{description}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 20, marginLeft: 20, alignItems: 'center' }}>
+                        <View style={styles.iconContainer}>
+                            <Icon name={currency} size={20} color="white" />
+                        </View>
+                        <Text style={styles.value}>{amount}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 20, marginLeft: 20, alignItems: 'center' }}>
+                        <View style={styles.iconContainer}>
+                            <Icon name="person" size={20} color="white" />
+                        </View>
+                        <Text style={styles.value}>Karthik</Text>
+                    </View>
+
+                    <Modal
+                        visible={modalVisible}
+                        transparent={true}
+                        animationType="fade"
+                        onRequestClose={() => setModalVisible(false)}
+                    >
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#00000099' }}>
+                            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+                                <Text>Are you sure you want to delete this?</Text>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
+                                    <TouchableOpacity onPress={() => handleDelete()} style={styles.editButtons}>
+                                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Yes</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.editButtons}>
+                                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>No</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+
                 </View>
             )
         case 'update':
             return (
                 <View style={styles.container}>
-                    <Header />
+                    <Header name="wallet-travel" />
                     <View style={{ padding: 20, flex: 1, marginTop: '10%' }}>
                         <View style={styles.formContainer}>
                             <CategoryPicker categories={icons} selectedCategory={icon} onSelect={setIcon} />
@@ -220,18 +255,17 @@ const ManageExpenses = ({ route }: any) => {
                             />
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
-                            <TouchableOpacity onPress={() => handleAdd()} style={styles.editButtons}>
-                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Update</Text>
+                            <TouchableOpacity onPress={() => handleUpdate()} style={styles.editButtons}>
+                                <Icon name="check" size={20} color="white" />
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.editButtons}>
-                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: "white" }}>Cancel</Text>
+                            <TouchableOpacity onPress={() => setMode('view')} style={styles.editButtons}>
+                                <Icon name="clear" size={20} color="white" />
                             </TouchableOpacity>
                         </View>
                     </View>
                 </View>
             )
-        case 'delete':
-            break;
+
     }
 
 }
@@ -259,8 +293,9 @@ const styles = StyleSheet.create({
     editButtons: {
         backgroundColor: '#1c6888',
         borderRadius: 15,
-        paddingVertical: 12,
-        paddingHorizontal: 30,
+        marginHorizontal: 2,
+        padding: 10,
+
         alignItems: 'center',
         elevation: 5,
         shadowColor: '#000',
@@ -294,23 +329,17 @@ const styles = StyleSheet.create({
         width: '45%',
         marginHorizontal: 5,
     },
-    label: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#444',
-        marginTop: 10,
-    },
     value: {
-        fontSize: 16,
-        color: '#222',
-        marginBottom: 10,
+        fontSize: 20,
+        color: '#444',
+        marginHorizontal: 10,
+        fontWeight: "400",
     },
     iconContainer: {
         backgroundColor: '#1c6888',
-        padding: 20,
+        padding: 10,
         borderRadius: 50,
         alignSelf: 'center',
-        marginBottom: 20,
     },
     buttonContainer: {
         marginTop: 30,

@@ -10,6 +10,7 @@ import * as ImagePicker from "expo-image-picker";
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from '../components/Icon';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Header from '../components/Header';
 
 
 type FormScreenProps = NativeStackScreenProps<StackParamList, 'Form'>;
@@ -59,7 +60,6 @@ const TripForm = ({ navigation }: FormScreenProps) => {
     const [itinerary, setItinerary] = useState<string[]>([]);
 
     const [image, setImage] = useState<string | null>(null);
-    const [uploading, setUploading] = useState(false);
 
     const generateItineraryInputs = (end: Date) => {
         if (!startDate || !end) return;
@@ -121,7 +121,7 @@ const TripForm = ({ navigation }: FormScreenProps) => {
                 const storageRef = ref(storage, `tripImages/${filename}`);
                 const response = await fetch(image);
                 const blob = await response.blob();
-    
+
                 await uploadBytes(storageRef, blob);
                 imageUrl = await getDownloadURL(storageRef);
             } catch (error) {
@@ -155,111 +155,114 @@ const TripForm = ({ navigation }: FormScreenProps) => {
     };
 
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-            <SafeAreaView>
-                <TextInput
-                    placeholder="Enter your Destination"
-                    value={tripName}
-                    onChangeText={setTripName}
-                    style={styles.input}
-                />
-                <View style={styles.dateContainer}>
-                    <TouchableOpacity onPress={showStartDatePicker} style={styles.dateButton}>
-                        <Text style={styles.dateText}>{startDate ? startDate.toDateString() : 'Select Start Date'}</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.icon}><Icon name='arrow-forward' color='#FE724C' size={30} /></Text>
-                    <TouchableOpacity onPress={showEndDatePicker} style={styles.dateButton}>
-                        <Text style={styles.dateText}>{endDate ? endDate.toDateString() : 'Select End Date'}</Text>
-                    </TouchableOpacity>
-                </View>
-
-                {/* Start Date Picker */}
-                <DateTimePickerModal
-                    isVisible={isStartDatePickerVisible}
-                    mode="date"
-                    onConfirm={handleStartDateConfirm}
-                    onCancel={hideStartDatePicker}
-                />
-
-                {/* End Date Picker */}
-                <DateTimePickerModal
-                    isVisible={isEndDatePickerVisible}
-                    mode="date"
-                    onConfirm={handleEndDateConfirm}
-                    onCancel={hideEndDatePicker}
-                />
-                {/* Dynamic Itinerary Inputs */}
-                {itinerary.length > 0 && <Text style={{ marginBottom: 15, textAlign: "center", fontSize: 20 }}>Itinerary:</Text>}
-                {itinerary.map((day, index) => (
+        <View style={styles.container}>
+            <Header name="flight"/>
+            <ScrollView style={{flex: 1, margin: 40}} showsVerticalScrollIndicator={false}>
+                <SafeAreaView>
                     <TextInput
-                        key={index}
-                        placeholder={`Day ${index + 1} Plan`}
-                        value={day}
-                        onChangeText={(text) => handleItineraryChange(index, text)}
+                        placeholder="Enter your Destination"
+                        value={tripName}
+                        onChangeText={setTripName}
                         style={styles.input}
                     />
-                ))}
-                <TextInput
-                    placeholder="Budget"
-                    value={budget}
-                    onChangeText={setBudget}
-                    keyboardType="numeric"
-                    style={styles.input}
-                />
-                <TextInput
-                    placeholder="Number of People"
-                    value={people}
-                    onChangeText={setPeople}
-                    keyboardType="numeric"
-                    style={styles.input}
-                />
-                <TextInput
-                    placeholder="Mode of Transport"
-                    value={transport}
-                    onChangeText={setTransport}
-                    style={styles.input}
-                />
-                <TextInput
-                    placeholder="Accomodation"
-                    value={accommodation}
-                    onChangeText={setAccommodation}
-                    style={styles.input}
-                />
-                <TextInput
-                    placeholder="Notes"
-                    value={notes}
-                    onChangeText={setNotes}
-                    style={styles.input}
-                />
+                    <View style={styles.dateContainer}>
+                        <TouchableOpacity onPress={showStartDatePicker} style={styles.dateButton}>
+                            <Text style={styles.dateText}>{startDate ? startDate.toDateString() : 'Select Start Date'}</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.icon}><Icon name='arrow-forward' color='#1c6888' size={30} /></Text>
+                        <TouchableOpacity onPress={showEndDatePicker} style={styles.dateButton}>
+                            <Text style={styles.dateText}>{endDate ? endDate.toDateString() : 'Select End Date'}</Text>
+                        </TouchableOpacity>
+                    </View>
 
-                <View style={{ alignItems: "center", marginTop: 20, marginBottom: 20 }}>
-                    <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                        <Text style={{ color: "gray", fontWeight: "bold" }}>Pick an Image</Text>
-                    </TouchableOpacity>
+                    {/* Start Date Picker */}
+                    <DateTimePickerModal
+                        isVisible={isStartDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleStartDateConfirm}
+                        onCancel={hideStartDatePicker}
+                    />
 
-                    {image && (
-                        <Image source={{ uri: image }} style={{ width: 200, height: 200, marginTop: 20, borderRadius: 10 }} />
-                    )}
-                </View>
-                <View style={{ alignItems: "center", marginBottom: 20 }}>
-                    <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}
-                    >
-                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Submit</Text>
-                    </TouchableOpacity>
-                </View>
-            </SafeAreaView>
-        </ScrollView>
+                    {/* End Date Picker */}
+                    <DateTimePickerModal
+                        isVisible={isEndDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleEndDateConfirm}
+                        onCancel={hideEndDatePicker}
+                    />
+                    {/* Dynamic Itinerary Inputs */}
+                    {itinerary.length > 0 && <Text style={{ marginBottom: 15, textAlign: "center", fontSize: 20 }}>Itinerary:</Text>}
+                    {itinerary.map((day, index) => (
+                        <TextInput
+                            key={index}
+                            placeholder={`Day ${index + 1} Plan`}
+                            value={day}
+                            onChangeText={(text) => handleItineraryChange(index, text)}
+                            style={styles.input}
+                        />
+                    ))}
+                    <TextInput
+                        placeholder="Budget"
+                        value={budget}
+                        onChangeText={setBudget}
+                        keyboardType="numeric"
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="Number of People"
+                        value={people}
+                        onChangeText={setPeople}
+                        keyboardType="numeric"
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="Mode of Transport"
+                        value={transport}
+                        onChangeText={setTransport}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="Accomodation"
+                        value={accommodation}
+                        onChangeText={setAccommodation}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="Notes"
+                        value={notes}
+                        onChangeText={setNotes}
+                        style={styles.input}
+                        
+                    />
+
+                    <View style={{ alignItems: "center", marginTop: 20, marginBottom: 20 }}>
+                        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+                            <Text style={{ color: "gray", fontWeight: "bold" }}>Pick an Image</Text>
+                        </TouchableOpacity>
+
+                        {image && (
+                            <Image source={{ uri: image }} style={{ width: 200, height: 200, marginTop: 20, borderRadius: 10 }} />
+                        )}
+                    </View>
+                    <View style={{ alignItems: "center", marginBottom: 20 }}>
+                        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}
+                        >
+                            <Text style={{ color: 'white', fontWeight: 'bold' }}>Submit</Text>
+                        </TouchableOpacity>
+                    </View>
+                </SafeAreaView>
+            </ScrollView>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        margin: 40,
+        flex: 1
     },
     input: {
         borderWidth: 1,
-        borderColor: '#FE724C',
+        borderColor: '#1c6888',
         padding: 10,
         marginBottom: 10,
         borderRadius: 8,
@@ -273,7 +276,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         marginBottom: 15,
-        borderColor: '#FE724C',
+        borderColor: '#1c6888',
         borderWidth: 1,
     },
     icon: {
@@ -281,7 +284,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     dateText: {
-        fontSize: 16,
+        fontSize: 14,
         color: '#333',
     },
     dateContainer: {
@@ -292,11 +295,11 @@ const styles = StyleSheet.create({
     imagePicker: {
         padding: 10,
         borderRadius: 10,
-        borderColor: '#FE724C',
+        borderColor: '#1c6888',
         borderWidth: 1,
     },
     submitButton: {
-        backgroundColor: '#FE724C',
+        backgroundColor: '#1c6888',
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',

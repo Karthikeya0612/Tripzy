@@ -3,24 +3,28 @@ import Icon from "./Icon";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { StackParamList } from "./Types";
 
-const Header =() =>{
+interface HeaderProps {
+    name: string;
+}
+
+const Header = ({ name }: HeaderProps) => {
     const navigation = useNavigation<NavigationProp<StackParamList>>();
-    return(
+    return (
         <View style={styles.header}>
-                <View style={styles.actionButtons}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Icon name="arrow-back" size={24} color="#1c6888" />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.iconContanier}>
-                    <Icon name="wallet-travel" color="white" size={50} />
-                </View>
+            <View style={styles.actionButtons}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#1c6888" />
+                </TouchableOpacity>
             </View>
+            <View style={styles.iconContanier}>
+                <Icon name={name} color="white" size={50} />
+            </View>
+        </View>
     )
 }
 export default Header;
 const styles = StyleSheet.create({
-   
+
     header: {
         backgroundColor: '#1c6888',
         width: '100%',

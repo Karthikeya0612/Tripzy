@@ -53,13 +53,27 @@ const MainTabNavigator = () => {
       <Tab.Screen
         name="Tripzy"
         component={HomeStack}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon name="home" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
-          ),
-          tabBarLabel: () => null,
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
+          const hideOnScreens = ['Form'];
+          const shouldHideTabBar = hideOnScreens.includes(routeName);
+          return {
+            tabBarStyle: {
+              position: "absolute", // Ensures the tab bar stays fixed at the bottom
+              bottom: 0, // Aligns tab bar at the very bottom
+              left: 0,
+              right: 0,
+              height: '6%', // Adjust height as needed
+              borderTopEndRadius: 25,
+              borderTopStartRadius: 25,
+              display: shouldHideTabBar ? 'none' : 'flex',
+            },
+            tabBarIcon: ({ focused }) => (
+              <Icon name="home" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
+            ),
+            tabBarLabel: () => null,
+          };
         }}
-
       />
       <Tab.Screen
         name="TripStack"
