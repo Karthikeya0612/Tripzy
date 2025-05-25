@@ -15,8 +15,8 @@ const App = () => {
       <StatusBar hidden={true} />
     <NavigationContainer>
       <Stack.Navigator initialRouteName="SignIn">
-        <Stack.Screen name="SignIn" component={SignIn} />
-        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="SignIn" component={SignIn}  options={{headerShown: false}}/>
+        <Stack.Screen name="SignUp" component={SignUp} options={{headerShown: false}}/>
         <Stack.Screen
           name="Main"
           component={MainTabNavigator}

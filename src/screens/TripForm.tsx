@@ -211,7 +211,7 @@ const TripForm = ({ navigation }: FormScreenProps) => {
 
     return (
         <View style={styles.container}>
-            <Header name="flight" />
+            <Header name="airplane" />
             <ScrollView style={{ flex: 1, margin: 40 }} showsVerticalScrollIndicator={false}>
                 <SafeAreaView>
                     <TextInput
@@ -226,7 +226,7 @@ const TripForm = ({ navigation }: FormScreenProps) => {
                         <TouchableOpacity onPress={showStartDatePicker} style={styles.dateButton}>
                             <Text style={styles.dateText}>{startDate ? startDate.toDateString() : 'Select Start Date'}</Text>
                         </TouchableOpacity>
-                        <Text style={styles.icon}><Icon name='arrow-forward' color='#1c6888' size={30} /></Text>
+                        <Text style={styles.icon}><Icon name='arrow-right' color='#1c6888' size={30} /></Text>
                         <TouchableOpacity onPress={showEndDatePicker} style={styles.dateButton}>
                             <Text style={styles.dateText}>{endDate ? endDate.toDateString() : 'Select End Date'}</Text>
                         </TouchableOpacity>

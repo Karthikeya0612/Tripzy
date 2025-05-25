@@ -91,19 +91,19 @@ const Trips: React.FC = () => {
                     <Image source={{ uri: item.image }} style={styles.tripImage} />
                     <View style={styles.tripInfo}>
                         <View style={styles.iconContainer}>
-                            <Icon name="location-on" size={20} color="#1c6888" />
+                            <Icon name="map-marker" size={20} color="#1c6888" />
                             <Text style={styles.tripTitle}>{item.name}</Text>
                         </View>
                         <View style={styles.iconContainer}>
-                            <Icon name="date-range" size={12} color="#1c6888" />
+                            <Icon name="calendar-month" size={12} color="#1c6888" />
                             <Text style={styles.tripDate}>{formatDate(item.startDate)} - {formatDate(item.endDate)}</Text>
                         </View>
                         <View style={styles.iconContainer}>
-                            <Icon name="people" size={16} color="#1c6888" />
+                            <Icon name="account-multiple" size={16} color="#1c6888" />
                             <Text style={styles.tripPeople}>{item.people} people</Text>
                         </View>
                         <View style={styles.iconContainer}>
-                            <Icon name="currency-rupee" size={16} color="#1c6888" />
+                            <Icon name="currency-inr" size={16} color="#1c6888" />
                             <Text style={styles.tripBudget}>{item.budget}</Text>
                         </View>
                     </View>

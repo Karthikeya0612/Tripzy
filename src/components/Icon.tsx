@@ -1,5 +1,5 @@
 import React from "react";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 interface IconProps {
     name: any;
@@ -8,7 +8,7 @@ interface IconProps {
 }
 
 const Icon = ({ name, size, color }: IconProps) => {
-  return <MaterialIcons name={name} size={size} color={color} />;
+  return <MaterialCommunityIcons name={name} size={size} color={color} />;
 };
 
 export default Icon;

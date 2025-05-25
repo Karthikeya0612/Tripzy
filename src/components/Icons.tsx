@@ -1,14 +1,14 @@
 const icons = [
   { label: 'Bills', value: 'receipt' },
-  { label: 'Food', value: 'local-dining' },
-  { label: 'Hotel', value: 'hotel' },
-  { label: 'Car', value: 'directions-car' },
-  { label: 'Bike', value: 'two-wheeler' },
+  { label: 'Food', value: 'silverware-fork-knife' },
+  { label: 'Hotel', value: 'bed' },
+  { label: 'Car', value: 'car' },
+  { label: 'Bike', value: 'motorbike' },
   { label: 'Train', value: 'train' },
-  { label: 'Flight', value: 'flight' },
-  { label: 'Petrol', value: 'local-gas-station' },
-  { label: 'Shopping', value: 'shopping-cart' },
-  { label: 'Drinks', value: 'local-bar' },
+  { label: 'Flight', value: 'airplane' },
+  { label: 'Petrol', value: 'gas-station' },
+  { label: 'Shopping', value: 'cart' },
+  { label: 'Drinks', value: 'glass-cocktail' },
 ];
 
 export default icons;

@@ -130,7 +130,7 @@ const ManageExpenses = ({ route }: any) => {
                     <View style={styles.addButton}>
                         <TouchableOpacity onPress={() => setMode('add')}>
                             <View style={{ flexDirection: 'row' }}>
-                                <Icon name="sticky-note-2" size={24} color="white" />
+                                <Icon name="receipt" size={24} color="white" />
                                 <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 5, color: "white" }}>Add Expenses</Text>
                             </View>
                         </TouchableOpacity>
@@ -163,10 +163,10 @@ const ManageExpenses = ({ route }: any) => {
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
                             <TouchableOpacity onPress={() => handleAdd()} style={styles.editButtons}>
-                                <Icon name="check" size={20} color="white" />
+                                <Icon name="check-bold" size={20} color="white" />
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setMode('list')} style={styles.editButtons}>
-                                <Icon name="clear" size={20} color="white" />
+                                <Icon name="close-thick" size={20} color="white" />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -179,13 +179,13 @@ const ManageExpenses = ({ route }: any) => {
 
                     <View style={{ flexDirection: 'row', justifyContent: "flex-end", alignItems: 'center', marginTop: 30, marginRight: 5 }}>
                         <TouchableOpacity onPress={() => setMode('update')} style={styles.editButtons}>
-                            <Icon name="edit" size={16} color="white" />
+                            <Icon name="pencil" size={16} color="white" />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.editButtons}>
                             <Icon name="delete" size={16} color="white" />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => handleCancel()} style={styles.editButtons}>
-                            <Icon name="clear" size={16} color="white" />
+                            <Icon name="close-thick" size={16} color="white" />
                         </TouchableOpacity>
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 20, marginLeft: 20, alignItems: 'center' }}>
@@ -202,7 +202,7 @@ const ManageExpenses = ({ route }: any) => {
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 20, marginLeft: 20, alignItems: 'center' }}>
                         <View style={styles.iconContainer}>
-                            <Icon name="person" size={20} color="white" />
+                            <Icon name="account" size={20} color="white" />
                         </View>
                         <Text style={styles.value}>Karthik</Text>
                     </View>
@@ -256,10 +256,10 @@ const ManageExpenses = ({ route }: any) => {
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
                             <TouchableOpacity onPress={() => handleUpdate()} style={styles.editButtons}>
-                                <Icon name="check" size={20} color="white" />
+                                <Icon name="check-bold" size={20} color="white" />
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setMode('view')} style={styles.editButtons}>
-                                <Icon name="clear" size={20} color="white" />
+                                <Icon name="close-thick" size={20} color="white" />
                             </TouchableOpacity>
                         </View>
                     </View>

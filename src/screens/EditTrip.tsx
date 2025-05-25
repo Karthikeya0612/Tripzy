@@ -54,7 +54,7 @@ const EditTrip: React.FC = () => {
 
     return (
         <View style={{ flex: 1 }}>
-            <Header name="edit" />
+            <Header name="airplane-edit" />
             <ScrollView style={{ flex: 1, margin: 40 }} showsVerticalScrollIndicator={false}>
                 <Text style={styles.label}>Trip Name</Text>
                 <TextInput
@@ -69,7 +69,7 @@ const EditTrip: React.FC = () => {
                             <Text>{tripDetails.startDate ? new Date(tripDetails.startDate).toDateString() : 'Select Start Date'}</Text>
                         </TouchableOpacity>
                     </View>
-                    <Text style={styles.icon}><Icon name='arrow-forward' color='#1c6888' size={30} /></Text>
+                    <Text style={styles.icon}><Icon name='arrow-right' color='#1c6888' size={30} /></Text>
                     <View>
                         <Text style={styles.label}>End Date</Text>
                         <TouchableOpacity onPress={() => setEndPickerVisible(true)} style={styles.input}>

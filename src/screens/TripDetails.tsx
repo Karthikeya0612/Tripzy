@@ -50,7 +50,7 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
         <Image source={{ uri: trip.image }} style={styles.image} />
         <View style={[styles.actionButtons, { top: "15%" }]}>
           <TouchableOpacity onPress={() => navigation.navigate('EditTrip', { trip })}>
-            <Icon name="edit" size={24} color="#1c6888" />
+            <Icon name="pencil" size={24} color="#1c6888" />
           </TouchableOpacity>
         </View>
 
@@ -62,7 +62,7 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
 
         <View style={[styles.actionButtons, { top: "15%", left: "2%", right: "85%" }]}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back" size={24} color="#1c6888" />
+            <Icon name="arrow-left" size={24} color="#1c6888" />
           </TouchableOpacity>
         </View>
         <Modal
@@ -89,15 +89,15 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
           <Text style={styles.title}>{trip.name}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
             <View style={{ flexDirection: 'row' }}>
-              <Icon name="currency-rupee" size={20} color="#1c6888" />
+              <Icon name="currency-inr" size={20} color="#1c6888" />
               <Text style={{ fontSize: 16, marginLeft: 5 }}>{trip.budget}</Text>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              <Icon name="date-range" size={20} color="#1c6888" />
+              <Icon name="calendar-month" size={20} color="#1c6888" />
               <Text style={{ fontSize: 16, marginLeft: 5 }}>{`${trip.itinerary.length} days`}</Text>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              <Icon name="people" size={20} color="#1c6888" />
+              <Icon name="account-multiple" size={20} color="#1c6888" />
               <Text style={{ fontSize: 16, marginLeft: 5 }}>{trip.people}</Text>
             </View>
           </View>
@@ -124,7 +124,7 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
       <View style={styles.expenseButton}>
         <TouchableOpacity onPress={() => navigation.navigate('ManageExpenses', { tripId: trip.id })}>
           <View style={{ flexDirection: 'row' }}>
-            <Icon name="sticky-note-2" size={24} color="white" />
+            <Icon name="receipt" size={24} color="white" />
             <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 5, color: "white" }}>Manage Expenses</Text>
           </View>
         </TouchableOpacity>

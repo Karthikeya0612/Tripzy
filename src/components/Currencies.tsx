@@ -1,11 +1,9 @@
 const currencies = [
-    { label: 'Rupee', value: 'currency-rupee'},
-    { label: 'Dollar', value: 'attach-money'},
-    { label: 'Yen', value: 'currency-yen'},
-    { label: 'Yuan', value: 'currency-yuan' },
-    { label: 'Pound', value: 'currency-pound' },
-    { label: 'Euro', value: 'euro' },
-    { label: 'Franc', value: 'currency-franc' },
+    { label: 'Rupee', value: 'currency-inr'},
+    { label: 'Dollar', value: 'currency-usd' },
+    { label: 'Yen', value: 'currency-cny'},
+    { label: 'Pound', value: 'currency-gbp' },
+    { label: 'Euro', value: 'currency-eur' },
 ];
 
 export default currencies;

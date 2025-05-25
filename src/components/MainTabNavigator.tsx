@@ -95,7 +95,7 @@ const MainTabNavigator = () => {
               display: shouldHideTabBar ? 'none' : 'flex',
             },
             tabBarIcon: ({ focused }) => (
-              <Icon name="flight" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
+              <Icon name="airplane" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
             ),
             tabBarLabel: () => null,
             headerShown: false,
@@ -107,7 +107,7 @@ const MainTabNavigator = () => {
         component={Profile}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name="person" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
+            <Icon name="account" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
           ),
           tabBarLabel: () => null,
         }}
