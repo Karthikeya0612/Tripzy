@@ -5,7 +5,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamList } from '../components/Types';
 import Icon from '../components/Icon';
 import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
+import { db, auth } from "../../firebaseConfig";
+import { query, where } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 interface Trip {
     id: string;
@@ -33,21 +35,39 @@ const Trips: React.FC = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const tripsRef = collection(db, "trips");
+        let unsubscribeTrips: (() => void) | null = null;
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const tripsRef = collection(db, "trips");
+                const q = query(tripsRef, where("userId", "==", user.uid));
 
-        // Real-time listener
-        const unsubscribe = onSnapshot(tripsRef, (tripsSnapshot) => {
-            const trips = tripsSnapshot.docs.map((doc) => ({
-                id: doc.id, //Each item has a unique key
-                ...doc.data(),
-            })) as Trip[];
+                unsubscribeTrips = onSnapshot(q, (snapshot) => {
+                    const trips = snapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    })) as Trip[];
 
-            setTrips(trips);
-            setLoading(false);
+                    setTrips(trips);
+                    setLoading(false);
+                });
+
+                // Clean up trips listener on unmount
+
+            }
+            else {
+                // Optional: clear trips when user logs out
+                setTrips([]);
+                setLoading(false);
+            }
         });
 
-        // Cleanup function to avoid memory leaks
-        return () => unsubscribe();
+        // Clean up auth listener
+        return () => {
+            // 👇 Clean up Firestore listener if it exists
+            if (unsubscribeTrips) unsubscribeTrips();
+            // 👇 Clean up auth listener
+            unsubscribeAuth();
+        };
     }, []);
 
     if (loading) {
@@ -78,7 +98,7 @@ const Trips: React.FC = () => {
         });
     }
 
-    
+
 
 
     // Function to render trip card
@@ -109,41 +129,46 @@ const Trips: React.FC = () => {
                     </View>
                 </View>
             </TouchableOpacity>
-            
+
         </View>
     );
 
 
     return (
         <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
-            <FlatList
-            data={[]}
-            renderItem={null}
-            ListHeaderComponent={() => (
-                <View style={{ flex: 1, marginBottom: 45 }}>
-                    {ongoingTrips.length > 0 && <Text style={styles.sectionTitle}>Ongoing Trip</Text>}
-                    <FlatList
-                        data={ongoingTrips}
-                        keyExtractor={(item) => item.id}
-                        renderItem={renderTrip}
-                    />
-
-                    {upcomingTrips.length > 0 && <Text style={styles.sectionTitle}>Upcoming Trip</Text>}
-                    <FlatList
-                        data={upcomingTrips}
-                        keyExtractor={(item) => item.id}
-                        renderItem={renderTrip}
-                    />
-
-                    {pastTrips.length > 0 && <Text style={styles.sectionTitle}>Past Trip</Text>}
-                    <FlatList
-                        data={pastTrips}
-                        keyExtractor={(item) => item.id}
-                        renderItem={renderTrip}
-                    />
+            {listOfTrips.length === 0 && (
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    <Text style={{ fontSize: 18, color: "gray" }}>No trips found. Start planning your first trip!</Text>
                 </View>
             )}
-        />
+            <FlatList
+                data={[]}
+                renderItem={null}
+                ListHeaderComponent={() => (
+                    <View style={{ flex: 1, marginBottom: 45 }}>
+                        {ongoingTrips.length > 0 && <Text style={styles.sectionTitle}>Ongoing Trip</Text>}
+                        <FlatList
+                            data={ongoingTrips}
+                            keyExtractor={(item) => item.id}
+                            renderItem={renderTrip}
+                        />
+
+                        {upcomingTrips.length > 0 && <Text style={styles.sectionTitle}>Upcoming Trip</Text>}
+                        <FlatList
+                            data={upcomingTrips}
+                            keyExtractor={(item) => item.id}
+                            renderItem={renderTrip}
+                        />
+
+                        {pastTrips.length > 0 && <Text style={styles.sectionTitle}>Past Trip</Text>}
+                        <FlatList
+                            data={pastTrips}
+                            keyExtractor={(item) => item.id}
+                            renderItem={renderTrip}
+                        />
+                    </View>
+                )}
+            />
         </View>
     );
 

@@ -1,9 +1,23 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
+import { signOut } from 'firebase/auth';
+import { auth } from '../../firebaseConfig';
 
+const handleLogout = async () => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
 const Profile = () => { 
     return (
         <View style={styles.container}>
         <Text style={styles.title}>Profile</Text>
+        <Button
+            title="Logout"
+            onPress={handleLogout}
+            color="#1c6888"
+        />
         </View>
     );
 }

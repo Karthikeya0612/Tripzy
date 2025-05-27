@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable, Platform, TouchableOpacity, Image } from 'react-native';
-import { db } from '../../firebaseConfig';
+import { auth, db } from '../../firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { StackParamList } from '../components/Types'; // Adjust the import path as necessary
@@ -115,6 +115,11 @@ const TripForm = ({ navigation }: FormScreenProps) => {
 
 
     const handleSubmit = async () => {
+        const user = auth.currentUser;
+        if (!user) {
+            Alert.alert('Error', 'User not authenticated');
+            return;
+        }
         const newErrors = {
             tripName: '',
             date: '',
@@ -196,7 +201,8 @@ const TripForm = ({ navigation }: FormScreenProps) => {
             accommodation,
             notes,
             image: imageUrl,
-            itinerary // Convert string to array
+            itinerary, // Convert string to array
+            userId: user.uid,
         };
 
         try {

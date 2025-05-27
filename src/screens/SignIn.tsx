@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert, Text, TouchableOpacity } from 'react-native';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../firebaseConfig';
-import Icon from '../components/Icon';
 
 const SignIn: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -10,11 +9,18 @@ const SignIn: React.FC<{ navigation: any }> = ({ navigation }) => {
 
     const handleSignIn = async () => {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            navigation.navigate('Main');
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            if (!user.emailVerified) {
+                Alert.alert(
+                    'Email Not Verified',
+                    'Please verify your email before logging in.'
+                );
+                return;
+            }
         } catch (error: any) {
-            Alert.alert("Sign In Failed", error.message);
-            setPassword('');
+            Alert.alert('Login Failed', error.message);
         }
     };
 
@@ -43,29 +49,13 @@ const SignIn: React.FC<{ navigation: any }> = ({ navigation }) => {
                         secureTextEntry
                         placeholderTextColor="#999"
                     />
+                    <TouchableOpacity style={styles.loginButton} onPress={handleSignIn}>
+                        <Text style={styles.loginText}>Sign Up</Text>
+                    </TouchableOpacity>
 
                     <TouchableOpacity>
                         <Text style={styles.forgotText}>Forgot password?</Text>
                     </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.loginButton} onPress={handleSignIn}>
-                        <Text style={styles.loginText}>Login</Text>
-                    </TouchableOpacity>
-
-                    <View style={styles.dividerContainer}>
-                        <View style={styles.line} />
-                        <Text style={styles.or}>OR</Text>
-                        <View style={styles.line} />
-                    </View>
-
-                    <View style={styles.socialIcons}>
-                        <TouchableOpacity style={styles.iconButton} >
-                            <Icon name="facebook" size={24} color="#3b5998" />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.iconButton}>
-                            <Icon name="google" size={24} color="#db4a39" />
-                        </TouchableOpacity>
-                    </View>
 
                     <Text style={styles.signUpText}>
                         Don't have an account?{' '}
@@ -84,12 +74,11 @@ export default SignIn;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#e5f2ff',
         justifyContent: 'center',
     },
     header: {
-        height: '40%',
-        backgroundColor: '#00aaff',
+        height: '45%',
+        backgroundColor: '#1c6888',
         borderBottomLeftRadius: 100,
         borderBottomRightRadius: 100,
         position: 'absolute',
@@ -100,19 +89,18 @@ const styles = StyleSheet.create({
         marginHorizontal: '10%',
         backgroundColor: 'white',
         borderRadius: 20,
-        padding: 20,
+        padding: "5%",
         elevation: 10,
-        marginTop: "30%",
     },
     appName: {
         textAlign: 'center',
-        fontSize: 24,
+        fontSize: 26,
         fontWeight: 'bold',
-        color: '#0077cc',
+        color: '#1c6888',
     },
     subtitle: {
         textAlign: 'center',
-        fontSize: 14,
+        fontSize: 16,
         color: '#666',
         marginBottom: 20,
     },
@@ -128,50 +116,28 @@ const styles = StyleSheet.create({
     },
     forgotText: {
         textAlign: 'right',
-        color: '#00aaff',
+        color: '#1c6888',
         marginBottom: 20,
         fontSize: 14,
     },
     loginButton: {
-        backgroundColor: '#00aaff',
+        backgroundColor: '#1c6888',
         paddingVertical: 12,
         borderRadius: 10,
         alignItems: 'center',
+        marginBottom: 10,
     },
     loginText: {
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
     },
-    dividerContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 15,
-    },
-    line: {
-        flex: 1,
-        height: 1,
-        backgroundColor: '#ccc',
-    },
-    or: {
-        marginHorizontal: 10,
-        color: '#aaa',
-    },
-    socialIcons: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        gap: 20,
-        marginBottom: 20,
-    },
-    iconButton: {
-        padding: 10,
-    },
     signUpText: {
         textAlign: 'center',
         color: '#555',
     },
     signUpLink: {
-        color: '#0077cc',
+        color: '#1c6888',
         fontWeight: 'bold',
     },
 });
