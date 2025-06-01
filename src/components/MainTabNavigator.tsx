@@ -40,6 +40,7 @@ const MainTabNavigator = () => {
       screenOptions={{
         headerShown: false, tabBarStyle:
         {
+          backgroundColor: '#1c6888', // Set a light background color for the tab bar
           position: "absolute", // Ensures the tab bar stays fixed at the bottom
           bottom: 0, // Aligns tab bar at the very bottom
           left: 0,
@@ -59,6 +60,7 @@ const MainTabNavigator = () => {
           const shouldHideTabBar = hideOnScreens.includes(routeName);
           return {
             tabBarStyle: {
+              backgroundColor: '#1c6888', // Set a light background color for the tab bar
               position: "absolute", // Ensures the tab bar stays fixed at the bottom
               bottom: 0, // Aligns tab bar at the very bottom
               left: 0,
@@ -69,7 +71,7 @@ const MainTabNavigator = () => {
               display: shouldHideTabBar ? 'none' : 'flex',
             },
             tabBarIcon: ({ focused }) => (
-              <Icon name="home" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
+              <Icon name="home" color={focused ? "white" : "#abb7b7"} size={30} />
             ),
             tabBarLabel: () => null,
           };
@@ -85,6 +87,7 @@ const MainTabNavigator = () => {
 
           return {
             tabBarStyle: {
+              backgroundColor: '#1c6888', // Set a light background color for the tab bar
               position: "absolute", // Ensures the tab bar stays fixed at the bottom
               bottom: 0, // Aligns tab bar at the very bottom
               left: 0,
@@ -95,7 +98,7 @@ const MainTabNavigator = () => {
               display: shouldHideTabBar ? 'none' : 'flex',
             },
             tabBarIcon: ({ focused }) => (
-              <Icon name="airplane" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
+              <Icon name="airplane" color={focused ? "white" : "#abb7b7"} size={30} />
             ),
             tabBarLabel: () => null,
             headerShown: false,
@@ -107,7 +110,7 @@ const MainTabNavigator = () => {
         component={Profile}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name="account" color={focused ? "#1c6888" : "#abb7b7"} size={30} />
+            <Icon name="account" color={focused ? "white" : "#abb7b7"} size={30} />
           ),
           tabBarLabel: () => null,
         }}

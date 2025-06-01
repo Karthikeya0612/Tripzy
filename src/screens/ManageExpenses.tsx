@@ -72,15 +72,6 @@ const ManageExpenses = ({ route }: any) => {
         setSelectedExpenseId('');
     };
 
-    const handleUpdateView = (id: string) => {
-        setUpdateId(id);
-        setShowUpdate(!showUpdate);
-        const expenseToUpdate = expenses.find(expense => expense.id === id);
-        if (expenseToUpdate) {
-            setDescription(expenseToUpdate.description);
-            setAmount(expenseToUpdate.amount.toString());
-        }
-    };
     const handleUpdate = async () => {
         await updateExpense(tripId, selectedExpenseId, { description, amount, icon, currency });
         fetchExpenses();

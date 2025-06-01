@@ -19,12 +19,19 @@ const App = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+      // ✅ Only set user if email is verified
+      if (user && user.emailVerified) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+
       setLoading(false);
     });
 
-    return unsubscribe; // Clean up on unmount
+    return unsubscribe;
   }, []);
+
 
   if (loading) {
     return (

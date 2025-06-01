@@ -202,7 +202,7 @@ const TripForm = ({ navigation }: FormScreenProps) => {
             notes,
             image: imageUrl,
             itinerary, // Convert string to array
-            userId: user.uid,
+            userId: auth.currentUser?.uid, 
         };
 
         try {

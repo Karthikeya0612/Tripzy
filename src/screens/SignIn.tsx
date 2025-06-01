@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert, Text, TouchableOpacity } from 'react-native';
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from '../../firebaseConfig';
 
 const SignIn: React.FC<{ navigation: any }> = ({ navigation }) => {
@@ -13,6 +13,7 @@ const SignIn: React.FC<{ navigation: any }> = ({ navigation }) => {
             const user = userCredential.user;
 
             if (!user.emailVerified) {
+                await signOut(auth);
                 Alert.alert(
                     'Email Not Verified',
                     'Please verify your email before logging in.'
@@ -50,7 +51,7 @@ const SignIn: React.FC<{ navigation: any }> = ({ navigation }) => {
                         placeholderTextColor="#999"
                     />
                     <TouchableOpacity style={styles.loginButton} onPress={handleSignIn}>
-                        <Text style={styles.loginText}>Sign Up</Text>
+                        <Text style={styles.loginText}>Login</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity>

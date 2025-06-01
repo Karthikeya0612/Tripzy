@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth, db } from '../../firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
 import { sendEmailVerification } from 'firebase/auth';
@@ -21,22 +21,25 @@ const SignUp: React.FC<{ navigation: any }> = ({ navigation }) => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Send verification email
-      await sendEmailVerification(user);
-
+      
       // Save user details in Firestore
       await setDoc(doc(db, 'users', user.uid), {
         name: name,
         email: user.email,
         createdAt: new Date(),
       });
+      
+      // Send verification email
+      await sendEmailVerification(user);
 
       Alert.alert(
         'Verify Email',
         'A verification link has been sent to your email. Please verify to continue.'
       );
 
+      await signOut(auth);
       navigation.navigate('SignIn');
+
     } catch (error: any) {
       Alert.alert('Sign Up Failed', error.message);
     }

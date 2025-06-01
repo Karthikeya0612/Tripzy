@@ -8,6 +8,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { db, auth } from "../../firebaseConfig";
 import { query, where } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { getTrips } from '../components/GetTrips';
 
 interface Trip {
     id: string;
@@ -36,39 +37,43 @@ const Trips: React.FC = () => {
 
     useEffect(() => {
         let unsubscribeTrips: (() => void) | null = null;
+
         const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
             if (user) {
-                const tripsRef = collection(db, "trips");
-                const q = query(tripsRef, where("userId", "==", user.uid));
-
-                unsubscribeTrips = onSnapshot(q, (snapshot) => {
-                    const trips = snapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    })) as Trip[];
-
-                    setTrips(trips);
-                    setLoading(false);
-                });
-
-                // Clean up trips listener on unmount
-
-            }
-            else {
-                // Optional: clear trips when user logs out
+                unsubscribeTrips = getTrips(
+                    user.uid,
+                    (trips) => {
+                        const sortedTrips = trips.sort(
+                            (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+                        );
+                        setTrips(sortedTrips);
+                        setLoading(false);
+                    },
+                    (error) => {
+                        console.error("Error loading trips:", error);
+                        setTrips([]);
+                        setLoading(false);
+                    }
+                );
+            } else {
+                if (unsubscribeTrips) {
+                    unsubscribeTrips();
+                    unsubscribeTrips = null;
+                }
                 setTrips([]);
                 setLoading(false);
             }
         });
 
-        // Clean up auth listener
         return () => {
-            // 👇 Clean up Firestore listener if it exists
-            if (unsubscribeTrips) unsubscribeTrips();
-            // 👇 Clean up auth listener
             unsubscribeAuth();
+            if (unsubscribeTrips) {
+                unsubscribeTrips();
+                unsubscribeTrips = null;
+            }
         };
     }, []);
+
 
     if (loading) {
         return <ActivityIndicator size="large" color="blue" />;
