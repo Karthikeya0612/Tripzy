@@ -8,7 +8,11 @@ import { differenceInDays, isAfter, isBefore, isWithinInterval, parseISO, format
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamList } from "../components/Types";
 import { doc, getDoc } from "firebase/firestore";
+import { Dimensions } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
+import Icon from "../components/Icon";
 
+const { width, height } = Dimensions.get('window');
 
 type FormScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'Form'>;
 interface Trip {
@@ -100,32 +104,44 @@ const HomeScreen = () => {
         .sort((a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime())[0];
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            {/* Logo */}
-            <Image source={require("../../assets/tripzy.png")} style={styles.logo} />
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#1c6888" }}>
+            {/* Header Section */}
+            <View style={{ flex: 0.15, paddingHorizontal: 20, backgroundColor: "#1c6888", justifyContent: 'center' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center',  }}>
+                    <View style={{backgroundColor: "white", borderRadius: 50, padding: 10}}>
+                        <Image source={require("../../assets/tripzy.png")} style={styles.logo} />
+                    </View>
+                    <View style={{ marginLeft: 10 }}>
+                        <Text style={styles.welcome}>Hello {userName}</Text>
+                        <Text style={styles.welcome}>Welcome to Tripzy!</Text>
+                    </View>
+                </View>
+            </View>
 
-            {/* Welcome */}
-            <Text style={styles.welcome}>Welcome to Tripzy! {userName}</Text>
+            {/* Scrollable Trip Section */}
+            <View style={{ flex: 0.85, backgroundColor: "#EAF0FF", borderTopLeftRadius: 24, borderTopRightRadius: 24 }}>
+                <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+                    {upcoming && <TripCard title="Upcoming Trip" trip={upcoming} countdown />}
+                    {ongoing && <TripCard title="Ongoing Trip" trip={ongoing} />}
+                    {past && <TripCard title="Most Recent Trip" trip={past} />}
 
-            {/* Create Trip Button */}
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate("Form")}
-            >
-                <Text style={styles.buttonText}>+ Create a New Trip</Text>
-            </TouchableOpacity>
+                    {trips.length === 0 && (
+                        <View style={styles.centered}>
+                            <Text style={{ fontSize: 18, color: "#888" }}>No trips found. Start planning your adventures!</Text>
+                        </View>
+                    )}
+                </ScrollView>
+            </View>
+            <View style={styles.addButton}>
+                <TouchableOpacity onPress={() => navigation.navigate("Form")}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Icon name="plus" size={24} color="white" />
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 5, color: "white" }}>Create a New Trip</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
 
-            {/* Sections */}
-            {upcoming && (
-                <TripCard title="Upcoming Trip" trip={upcoming} countdown />
-            )}
-            {ongoing && (
-                <TripCard title="Ongoing Trip" trip={ongoing} />
-            )}
-            {past && (
-                <TripCard title="Most Recent Trip" trip={past} />
-            )}
-        </ScrollView>
     );
 };
 
@@ -158,9 +174,9 @@ const TripCard = ({ title, trip, countdown = false }: { title: string; trip: Tri
 export default HomeScreen;
 const styles = StyleSheet.create({
     container: {
-        padding: 16,
-        backgroundColor: "#f2f2f2",
-        paddingBottom: 100,
+        paddingVertical: 20,
+        paddingHorizontal: 16,
+
     },
     centered: {
         flex: 1,
@@ -168,17 +184,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     logo: {
-        width: 150,
-        height: 150,
-        borderRadius: 50,
-        marginTop: 20,
-        marginBottom: 10,
+        width: width * 0.15,
+        height: width * 0.15,
     },
     welcome: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: "bold",
-        textAlign: "center",
-        marginBottom: 20,
+        color: "#fff",
     },
     button: {
         backgroundColor: "#1c6888",
@@ -231,5 +243,17 @@ const styles = StyleSheet.create({
     cardDates: {
         color: "#555",
         marginTop: 4,
+    },
+    addButton: {
+        position: 'absolute',
+        left: '55%',
+        right: '2%',
+        backgroundColor: '#1c6888',
+        borderRadius: 15,
+        padding: 10,
+        alignItems: 'center',
+        elevation: 5,
+        shadowColor: '#000',
+        bottom: '7%',
     },
 });
