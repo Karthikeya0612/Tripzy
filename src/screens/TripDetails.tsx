@@ -10,6 +10,7 @@ import { db } from "../../firebaseConfig";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { deleteObject, getStorage, ref } from 'firebase/storage';
+import NavigateBack from '../components/NavigateBack';
 
 const formatDate = (startDate: string, dayOffset: number) => {
   const date = new Date(startDate);
@@ -29,7 +30,7 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
   const { trip } = route.params;
   const navigation = useNavigation<NavigationProp<StackParamList>>();
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   const handleDeleteTrip = async (trip: { id: string, image: any }) => {
     try {
       const storage = getStorage();
@@ -48,23 +49,23 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: trip.image }} style={styles.image} />
-        <View style={[styles.actionButtons, { top: "15%" }]}>
-          <TouchableOpacity onPress={() => navigation.navigate('EditTrip', { trip })}>
-            <Icon name="pencil" size={24} color="#1c6888" />
-          </TouchableOpacity>
-        </View>
 
-        <View style={[styles.actionButtons, { top: "30%" }]}>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Icon name="delete" size={24} color="#1c6888" />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('EditTrip', { trip })} style={[styles.actionButtons, { top: "15%" }]}>
+          <Icon name="pencil" size={24} color="#1c6888" />
+        </TouchableOpacity>
 
-        <View style={[styles.actionButtons, { top: "15%", left: "2%", right: "85%" }]}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-left" size={24} color="#1c6888" />
-          </TouchableOpacity>
-        </View>
+
+        <TouchableOpacity onPress={() => setModalVisible(true)} style={[styles.actionButtons, { top: "30%" }]}>
+          <Icon name="delete" size={24} color="#1c6888" />
+        </TouchableOpacity>
+
+
+        <TouchableOpacity onPress={() => navigation.navigate('ManageFriends', { tripId: trip.id })} style={[styles.actionButtons, { top: "45%" }]}>
+          <Icon name="account-multiple" size={24} color="#1c6888" />
+        </TouchableOpacity>
+
+        <NavigateBack />
+
         <Modal
           visible={modalVisible}
           transparent={true}
@@ -108,6 +109,7 @@ const TripDetails: React.FC<TripDetailsScreenProps> = ({ route }) => {
           <Text style={styles.text}><Text style={styles.textHeading}>Transport: </Text> {trip.transport}</Text>
           <Text style={styles.text}><Text style={styles.textHeading}>Accommodation: </Text>{trip.accommodation}</Text>
           <Text style={styles.text}><Text style={styles.textHeading}>Notes: </Text>{trip.notes}</Text>
+          <Text style={styles.text}><Text style={styles.textHeading}>Created By: </Text>{trip.createdBy} on {formatDate(trip.createdAt ?? '', 0)}</Text>
         </View>
         <Text style={styles.title}>Itinerary:</Text>
         <FlatList

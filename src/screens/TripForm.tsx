@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable, Platform, TouchableOpacity, Image } from 'react-native';
 import { auth, db } from '../../firebaseConfig';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { StackParamList } from '../components/Types'; // Adjust the import path as necessary
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -190,6 +190,14 @@ const TripForm = ({ navigation }: FormScreenProps) => {
                 return;
             }
         }
+        
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        let createdBy = "Unknown User";
+        if (userDocSnap.exists()) {
+            createdBy = userDocSnap.data().name || user.email;
+        }
 
         const tripData = {
             name: tripName,
@@ -201,8 +209,11 @@ const TripForm = ({ navigation }: FormScreenProps) => {
             accommodation,
             notes,
             image: imageUrl,
-            itinerary, // Convert string to array
-            userId: auth.currentUser?.uid, 
+            itinerary,
+            userId: auth.currentUser?.uid,
+            sharedWith: [],
+            createdBy, // Add createdBy field
+            createdAt: new Date().toISOString(), // Add creation timestamp
         };
 
         try {

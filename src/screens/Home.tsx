@@ -11,6 +11,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { Dimensions } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../components/Icon";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const { width, height } = Dimensions.get('window');
 
@@ -106,20 +107,20 @@ const HomeScreen = () => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#1c6888" }}>
             {/* Header Section */}
-            <View style={{ flex: 0.15, paddingHorizontal: 20, backgroundColor: "#1c6888", justifyContent: 'center' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center',  }}>
+            <View style={{ flex: 0.15, paddingHorizontal: RFValue(20), backgroundColor: "#1c6888", justifyContent: 'center' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <View style={{backgroundColor: "white", borderRadius: 50, padding: 10}}>
                         <Image source={require("../../assets/tripzy.png")} style={styles.logo} />
                     </View>
                     <View style={{ marginLeft: 10 }}>
-                        <Text style={styles.welcome}>Hello {userName}</Text>
+                        <Text style={styles.user}>Hi, {userName}</Text>
                         <Text style={styles.welcome}>Welcome to Tripzy!</Text>
                     </View>
                 </View>
             </View>
 
             {/* Scrollable Trip Section */}
-            <View style={{ flex: 0.85, backgroundColor: "#EAF0FF", borderTopLeftRadius: 24, borderTopRightRadius: 24 }}>
+            <View style={{ flex: 0.85, backgroundColor: "#EAF0FF", borderTopLeftRadius: RFValue(24), borderTopRightRadius: RFValue(24) }}>
                 <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
                     {upcoming && <TripCard title="Upcoming Trip" trip={upcoming} countdown />}
                     {ongoing && <TripCard title="Ongoing Trip" trip={ongoing} />}
@@ -127,7 +128,7 @@ const HomeScreen = () => {
 
                     {trips.length === 0 && (
                         <View style={styles.centered}>
-                            <Text style={{ fontSize: 18, color: "#888" }}>No trips found. Start planning your adventures!</Text>
+                            <Text style={{ fontSize: RFValue(18), color: "#888" }}>No trips found. Start planning your adventures!</Text>
                         </View>
                     )}
                 </ScrollView>
@@ -174,8 +175,8 @@ const TripCard = ({ title, trip, countdown = false }: { title: string; trip: Tri
 export default HomeScreen;
 const styles = StyleSheet.create({
     container: {
-        paddingVertical: 20,
-        paddingHorizontal: 16,
+        paddingVertical: RFValue(20),
+        paddingHorizontal: RFValue(16),
 
     },
     centered: {
@@ -184,12 +185,17 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     logo: {
-        width: width * 0.15,
-        height: width * 0.15,
+        width: width * 0.1,
+        height: width * 0.1,
+    },
+    user: {
+        fontSize: RFValue(20),
+        fontWeight: "bold",
+        color: "#fff",
     },
     welcome: {
-        fontSize: 20,
-        fontWeight: "bold",
+        fontSize: RFValue(16),
+        fontWeight: "medium",
         color: "#fff",
     },
     button: {

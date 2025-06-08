@@ -11,6 +11,7 @@ import { StackParamList } from './Types';
 import EditTrip from '../screens/EditTrip';
 import ManageExpenses from '../screens/ManageExpenses';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import ManageFriends from '../screens/ManageFriends';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<StackParamList>();
@@ -22,6 +23,7 @@ const TripsStack = () => {
       <Stack.Screen name="TripDetails" component={TripDetails} options={{ headerShown: false }} />
       <Stack.Screen name="EditTrip" component={EditTrip} options={{ headerShown: false }} />
       <Stack.Screen name="ManageExpenses" component={ManageExpenses} options={{ headerShown: false }} />
+      <Stack.Screen name="ManageFriends" component={ManageFriends} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
@@ -82,7 +84,7 @@ const MainTabNavigator = () => {
         component={TripsStack}
         options={({ route }) => {
           const routeName = getFocusedRouteNameFromRoute(route) ?? 'Trips';
-          const hideOnScreens = ['TripDetails', 'EditTrip', 'ManageExpenses', 'ExpenseDetails'];
+          const hideOnScreens = ['TripDetails', 'EditTrip', 'ManageExpenses', 'ExpenseDetails', 'ManageFriends'];
           const shouldHideTabBar = hideOnScreens.includes(routeName);
 
           return {

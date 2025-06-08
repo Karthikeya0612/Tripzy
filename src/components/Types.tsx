@@ -30,6 +30,9 @@ export type StackParamList = {
       accommodation: string;
       notes: string;
       people: string;
+      sharedWith?: string[]; // Optional field for shared users
+      createdBy?: string; // Optional field for creator
+      createdAt?: string; // Optional field for creation date
     };
   };
   EditTrip: { 
@@ -47,6 +50,9 @@ export type StackParamList = {
       people: string;
     };
   };
+  ManageFriends: { 
+    tripId: string; // Pass the trip ID
+  }
 };
 
 export type TripDetailsScreenProps = NativeStackScreenProps<StackParamList, 'TripDetails'>;
